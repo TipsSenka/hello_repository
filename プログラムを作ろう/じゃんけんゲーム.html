@@ -17,6 +17,23 @@
     10. ユーザーが統計をリセットするかどうかを選ぶ
     11. ユーザーが統計をリセットする場合は、統計を初期化する
     -->
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+        img {
+            width: 50px;
+            height: 50px;
+        }
+    </style>
 </head>
 <body>
 
@@ -28,6 +45,11 @@
         <button id="rock"><img src="画像/gu.png" alt="">グー</button>
         <button id="paper"><img src="画像/pa.png" alt="">パー</button>
         <button id="scissors"><img src="画像/ch.png" alt="">チョキ</button>
+    </div>
+
+    <div>
+        <h2>あなたの手</h2>
+        <p id="user-hand"></p>
     </div>
 
 
@@ -58,6 +80,16 @@
         };
 
         function playGame(userHand) {
+            //ユーザーの手をhtmlで表示する
+            const userHandElement = document.getElementById("user-hand");
+            if (userHand === "グー") {
+                userHandElement.innerHTML = '<img src="画像/gu.png" alt="">グー';
+            } else if (userHand === "チョキ") {
+                userHandElement.innerHTML = '<img src="画像/ch.png" alt="">チョキ';
+            } else {
+                userHandElement.innerHTML = '<img src="画像/pa.png" alt="">パー';
+            }
+
             //コンピューターの手をランダムで決定する
             const computerHand = hands[Math.floor(Math.random() * hands.length)];
             //コンピューターの手を結果を表示する前に画像で表示する
