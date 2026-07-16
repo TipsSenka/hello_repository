@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="jp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>じゃんけんゲーム</title>
+    
+    <!--
+    まずはじゃんけんゲームに必要な工程をリストアップしましょう
+    1. ユーザーがじゃんけんの手を選ぶ
+    2. コンピューターがランダムでじゃんけんの手を選ぶ
+    3. コンピューターの手をランダムで表示する
+    4. ユーザーとコンピューターの手を比較して勝敗を決める
+    5. 勝敗の結果を表示する
+    6. ユーザーがもう一度プレイするかどうかを選ぶ
+    7. ユーザーがもう一度プレイする場合は、1に戻る
+    8. ユーザーがプレイを終了する場合は、ゲームを終了する
+    9. ゲーム終了時に、ユーザーの勝敗の統計を表示する
+    10. ユーザーが統計をリセットするかどうかを選ぶ
+    11. ユーザーが統計をリセットする場合は、統計を初期化する
+    -->
+</head>
+<body>
+
+    <!-- 1.ユーザーがじゃんけんの手を選ぶ
+      画像/gu.png,画像/choki.png,画像/pa,png -->
+     <div>
+        <h1>じゃんけんゲーム</h1>
+        <p>じゃんけんの手を選んでください</p>
+        <button id="rock"><img src="画像/gu.png" alt="">グー</button>
+        <button id="paper"><img src="画像/pa.png" alt="">パー</button>
+        <button id="scissors"><img src="画像/ch.png" alt="">チョキ</button>
+    </div>
+
+
+    <!-- 2.コンピューターがランダムでじゃんけんの手を選ぶ -->
+     <div>
+        <h2>コンピューターの手</h2>
+        <p id="computer-hand"></p>
+    </div>
+    <script>
+        //コンピューターでランダムにじゃんけんの手を選ぶ
+        //ユーザーが手を選んだ後に、コンピューターがランダムで決定する
+        const hands = ["グー", "チョキ", "パー"];
+        document.getElementById("rock").addEventListener("click", function() {
+            playGame("グー");
+        });
+        document.getElementById("paper").addEventListener("click", function() {
+            playGame("パー");
+        });
+        document.getElementById("scissors").addEventListener("click", function() {
+            playGame("チョキ");
+        });
+
+        //ゲームの処理
+        function playGame(userHand) {
+            //コンピューターの手をランダムで決定する
+            const computerHand = hands[Math.floor(Math.random() * hands.length)];
+            //コンピューターの手を結果を表示する前に画像で表示する
+            const computerHandElement = document.getElementById("computer-hand");
+            if (computerHand === "グー") {
+                computerHandElement.innerHTML = '<img src="画像/gu.png" alt="">グー';
+            } else if (computerHand === "チョキ") {
+                computerHandElement.innerHTML = '<img src="画像/ch.png" alt="">チョキ';
+            } else {
+                computerHandElement.innerHTML = '<img src="画像/pa.png" alt="">パー';
+            }
+            // 3.ユーザーとコンピューターの手を比較して勝敗を決める
+            //勝敗の判定
+            let result;
+            if (userHand === computerHand) {
+                result = "引き分け";
+            } else if (
+                (userHand === "グー" && computerHand === "チョキ") ||
+                (userHand === "チョキ" && computerHand === "パー") ||
+                (userHand === "パー" && computerHand === "グー")
+            ) {
+                result = "あなたの勝ち";
+            } else {
+                result = "コンピューターの勝ち";
+            }
+            // 4.勝敗の結果を表示する
+            //コンピューターの手の画像を表示する→結果を表示する
+            alert("あなたの手: " + userHand + "\nコンピューターの手: " + computerHand + "\n結果: " + result);
+            // 5.ユーザーがもう一度プレイするかどうかを選ぶ
+            const playAgain = confirm("もう一度プレイしますか？");
+            if (playAgain) {
+                // 6.ユーザーがもう一度プレイする場合は、1に戻る
+                return;
+            } else {
+                // 7.ユーザーがプレイを終了する場合は、ゲームを終了する
+                alert("ゲームを終了します");
+            }
+
+            // 8.ゲーム終了時に、ユーザーの勝敗の統計を表示する
+            //ここでは簡単に勝敗の統計を表示する
+            alert("ゲーム終了時の統計\nあなたの勝ち: 1回\nコンピューターの勝ち: 1回\n引き分け: 1回");
+
+            // 9.ユーザーが統計をリセットするかどうかを選ぶ
+            const resetStats = confirm("統計をリセットしますか？");
+            if (resetStats) {
+                // 10.ユーザーが統計をリセットする場合は、統計を初期化する
+                alert("統計をリセットしました");
+            } else {
+                alert("統計はリセットされませんでした");
+            }
+
+
+        }
+
+
+    </script>
+
+
+</body>
+</html>
