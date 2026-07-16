@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>じゃんけんゲーム</title>
+    <!--
+    まずはじゃんけんゲームに必要な工程をリストアップします。
+    １．ユーザーがじゃんけんの手を選ぶ
+    ２．コンピュータがじゃんけんの手をランダムに選ぶ
+    ３．ユーザーとコンピュータの手を比較して勝敗を判定する
+    ４．勝敗の結果を表示する
+    ５．もう一度プレイするかどうかをユーザーに尋ねる
+    ６．ユーザーがもう一度プレイする場合は、１に戻る。
+    ７．ユーザーがもう一度プレイしない場合は、ゲームを終了する
+    ８．ゲーム終了時に、ユーザーの勝敗の統計を表示する
+    ９．ゲーム終了時に、統計を保存する
+    -->
+</head>
+<body>
+    <!-- 
+    １．ユーザーが手を選ぶ
+    ※画像/gu.png、画像/ch.png、画像/pa.pngの３つの画像を用意して、ボタンの代わりに画像をクリックして手を選ぶようにすることもできます。
+    ※idの名前はローマ字で統一する。gu,ch,paの３つのidを用意する。
+    -->
+    <div id="userchoice">
+        <h1>じゃんけんゲーム</h1>
+        <p>じゃんけんの手を選んでください。</p>
+        <img src="画像/gu.png" alt="グー" id="gu" onclick="playGame('グー')">
+        <img src="画像/ch.png" alt="チョキ" id="ch" onclick="playGame('チョキ')">
+        <img src="画像/pa.png" alt="パー" id="pa" onclick="playGame('パー')">
+    </div>
+    <!-- 
+    ２．コンピュータがランダムで手を選ぶ
+    -->
+    <div id="computerchoice">
+        <h2>コンピュータの手</h2>
+        <p id="computerhand"></p>
+    </div>
+
+    <script>
+        //３．ユーザーとコンピュータの手を比較して勝敗を判定する
+        function playGame(userHand) {
+            // コンピュータがランダムで手を選ぶ
+            const hands = ['グー', 'チョキ', 'パー'];
+            const computerHand = hands[Math.floor(Math.random() * hands.length)];
+            // コンピュータの手を表示する
+            document.getElementById('computerhand').textContent = computerHand;
+
+            // 勝敗を判定する
+            let result;
+            if (userHand === computerHand) {
+                result = '引き分け';
+            } else if (
+                (userHand === 'グー' && computerHand === 'チョキ') ||
+                (userHand === 'チョキ' && computerHand === 'パー') ||
+                (userHand === 'パー' && computerHand === 'グー')
+            ) {
+                result = 'あなたの勝ち';
+            } else {
+                result = 'コンピュータの勝ち';
+            }
+
+            // 勝敗の結果を表示する
+            alert(result);
+        }
+
+        //５．もう一度プレイするかどうかをユーザーに尋ねる
+        function askToPlayAgain() {
+            const playAgain = confirm('もう一度プレイしますか？');
+            if (playAgain) {
+                // ６．もう一度プレイする場合は、コンピュータの手をリセットして、ユーザーが手を選ぶ画面に戻る
+                document.getElementById('computerhand').textContent = '';
+            } else {
+                // ７．ユーザーがもう一度プレイしない場合は、ゲームを終了する
+                // ８．ゲーム終了時に、ユーザーの勝敗の統計を表示する
+                alert('ゲームを終了します。');
+            }
+        }
+
+    </script>
+</body>
+</html>
