@@ -18,11 +18,10 @@ def get_user_hand():
     user_hand = input("グー、チョキ、パーのいずれかを入力してください: ")
     return user_hand
 
-#コンピュータの手をランダムに選ぶ関数
+#コンピュータの手をランダムに取得する関数
 def get_computer_hand():
-    hands = ['グー', 'チョキ', 'パー']
-    computer_hand = random.choice(hands)
-    return computer_hand
+    hands = ["グー", "チョキ", "パー"]
+    return random.choice(hands)
 
 #勝敗を判定する関数
 def determine_winner(user_hand, computer_hand):
@@ -30,28 +29,22 @@ def determine_winner(user_hand, computer_hand):
         return '引き分け'
     elif (user_hand == 'グー' and computer_hand == 'チョキ') or \
          (user_hand == 'チョキ' and computer_hand == 'パー') or \
-         (user_hand == 'パー' and computer_hand == 'グー'): 
+         (user_hand == 'パー' and computer_hand == 'グー'):
         return 'ユーザーの勝ち'
     else:
         return 'コンピュータの勝ち'
-
-#結果を表示する関数
-def show_result(user_hand, computer_hand):
-    result = determine_winner(user_hand, computer_hand)
-    print(f"あなたの手: {user_hand}\nコンピュータの手: {computer_hand}\n結果: {result}")
-        
-#ゲームを終了するかどうかを確認する関数
-def ask_to_continue():
-    answer = input("もう一度プレイしますか？ (y/n): ")
-    return answer.lower() == 'y'
-
+    
 #メインのゲームループ
 def main():
     while True:
         user_hand = get_user_hand()
         computer_hand = get_computer_hand()
-        show_result(user_hand, computer_hand)
+        result = determine_winner(user_hand, computer_hand)
+        print(f"あなたの手: {user_hand}, コンピュータの手: {computer_hand}, 結果: {result}")
         
-        if not ask_to_continue():
-            print("ゲームを終了します。")
+        play_again = input("もう一度プレイしますか？ (y/n): ")
+        if play_again.lower() != 'y':
             break
+
+if __name__ == "__main__":
+    main()
