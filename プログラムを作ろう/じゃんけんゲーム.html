@@ -19,20 +19,27 @@
     -->
 
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 20px;
-        }
-        button {
-            margin: 10px;
-            padding: 10px 20px;
-            font-size: 16px;
-        }
-        img {
-            width: 50px;
-            height: 50px;
-        }
+        /* //CSSのスタイルをここに記述する */
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background-color: #f0f0f0;
+    }
+    p {
+        font-size: 1.2em;
+    }
+    img {
+        width: 50px;
+        height: 50px;
+    }
+    button {
+        margin: 10px;
+        padding: 10px 20px;
+        font-size: 1em;
+        cursor: pointer;
+    }
+
+
     </style>
 </head>
 <body>
@@ -131,42 +138,20 @@
             //ここでは簡単に統計を更新するために、勝敗の結果を表示するたびに、統計を更新するようにする
             const statsElement = document.createElement("p");
             statsElement.textContent = `統計\nあなたの勝ち: ${stats.userWins}回\nコンピューターの勝ち: ${stats.computerWins}回\n引き分け: ${stats.draws}回`;
-            computerHandElement.appendChild(statsElement);
-
-
-
-
-            // 6.ゲーム終了ボタンを押したとき時に、ユーザーの勝敗の統計を表示する
-            const endGameButton = document.createElement("button");
-            endGameButton.textContent = "ゲーム終了";
-            endGameButton.addEventListener("click", function() {
-                //ゲーム終了ボタンを押したら、統計を表示する
-                const statsElement = document.createElement("p");
-                statsElement.textContent = `ゲーム終了時の統計\nあなたの勝ち: ${stats.userWins}回\nコンピューターの勝ち: ${stats.computerWins}回\n引き分け: ${stats.draws}回`;
-                computerHandElement.appendChild(statsElement);
-            });
-            computerHandElement.appendChild(endGameButton);
-
-
+            computerHandElement.appendChild(statsElement)
 
             // 7.ユーザーが統計をリセットするかどうかを選ぶ
-            const resetStatsButton = document.createElement("button");
-            resetStatsButton.textContent = "統計をリセット";
-            resetStatsButton.addEventListener("click", function() {
-                //統計をリセットするボタンを押したら、統計を初期化する
-                const statsElement = document.createElement("p");
-                statsElement.textContent = "統計をリセットしました";
-                computerHandElement.appendChild(statsElement);
-                // 統計を初期化する
+            //リセットボタンを押すと、統計を初期化し、上記の統計を表示する
+            const resetButton = document.createElement("button");
+            resetButton.textContent = "統計をリセットする";
+            resetButton.addEventListener("click", function() {
                 stats.userWins = 0;
                 stats.computerWins = 0;
                 stats.draws = 0;
+                statsElement.textContent = `統計\nあなたの勝ち: ${stats.userWins}回\nコンピューターの勝ち: ${stats.computerWins}回\n引き分け: ${stats.draws}回`;
             });
-            computerHandElement.appendChild(resetStatsButton);
+            computerHandElement.appendChild(resetButton);
 
-            // 8.ユーザーが統計をリセットする場合は、統計を初期化する
-            //ここでは簡単に統計を初期化するために、統計をリセットするボタンを押したら、統計を初期化するようにする
-            
 
 
         }
