@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>じゃんけんゲーム</title>
+    <!-- じゃんけんゲームを作るのに必要な工程をリストアップ -->
+    <!-- 
+        1. ユーザーが手を選ぶ(グー、チョキ、パー)
+        2. コンピュータがランダムで手を選ぶ
+        3. ユーザーとコンピュータの手を比較して勝敗を判定する
+        4. 勝敗の結果を表示する
+        5. 必要に応じてリセットボタンを作る
+    -->
+</head>
+<body>
+    <!-- 1. ユーザーが手を選ぶ
+        ※"画像/gu.png"、"画像/choki.png"、"画像/pa.png"の3つの画像を用意してボタンに表示
+        ※idの名前はローマ字で統一する。gu,choki(ch),paの3つのidを用意する
+        ※手の画像の背景色をguは赤,choki(ch)は青,paは緑にする
+    -->
+    <h1>じゃんけんゲーム</h1>
+    <p>手を選んでください:</p>
+    <button id="gu" style="background-color: red;"><img src="画像/gu.png" alt="グー"></button>
+    <button id="ch" style="background-color: blue;"><img src="画像/ch.png" alt="チョキ"></button>
+    <button id="pa" style="background-color: green;"><img src="画像/pa.png" alt="パー"></button>
+
+    <!-- 2. コンピュータがランダムで手を選ぶ -->
+    <!-- コンピュータが選んだ手を画像で表示する -->
+    <div id="computer-choice">
+        <p>コンピュータの手: <span id="computer-hand">?</span></p>
+    </div>
+    <!-- cssで見た目を整えていく 
+    ※要素は上からコンピュータの手,じゃんけん結果,プレイヤーの選ぶ手の順に表示されるようにする
+    -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        button {
+            border: none;
+            padding: 10px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        button img {
+            width: 50px;
+            height: 50px;
+        }
+        #computer-choice {
+            margin-top: 20px;
+        }
+        #result {
+            font-size: 1.5em;
+            margin-top: 20px;
+        }
+    </style>
+    <script>
+        // コンピュータの手をランダムで選ぶ関数
+        // ※ユーザーが手を選んだ後に、コンピュータの手をランダムで選ぶようにする
+        function getComputerChoice() {
+            const choices = ['gu', 'ch', 'pa'];
+            const randomIndex = Math.floor(Math.random() * choices.length);
+            const computerChoice = choices[randomIndex];
+            displayComputerChoice(computerChoice);
+            return computerChoice;
+        }
+
+        // 勝敗を判定する関数
+        function determineWinner(userChoice, computerChoice) {
+            if (userChoice === computerChoice) {
+                return '引き分け';
+            } else if (
+                (userChoice === 'gu' && computerChoice === 'ch') ||
+                (userChoice === 'ch' && computerChoice === 'pa') ||
+                (userChoice === 'pa' && computerChoice === 'gu')
+            ) {
+                return 'あなたの勝ち';
+            } else {
+                return 'コンピュータの勝ち';
+            }
+        }
+
+        // ボタンがクリックされたときの処理
+        document.getElementById('gu').addEventListener('click', () => playGame('gu'));
+        document.getElementById('ch').addEventListener('click', () => playGame('ch'));
+        document.getElementById('pa').addEventListener('click', () => playGame('pa'));
+
+        function playGame(userChoice) {
+            const computerChoice = getComputerChoice();
+            const result = determineWinner(userChoice, computerChoice);
+            displayResult(result);
+        }
+        // コンピュータが選んだ手が画像で画面に表示されるようにする
+        function displayComputerChoice(computerChoice) {
+            const computerHandElement = document.getElementById('computer-hand');
+            let imagePath = '';
+            if (computerChoice === 'gu') {
+                imagePath = '画像/gu.png';
+            } else if (computerChoice === 'ch') {
+                imagePath = '画像/ch.png';
+            } else if (computerChoice === 'pa') {
+                imagePath = '画像/pa.png';
+            }
+            computerHandElement.innerHTML = `<img src="${imagePath}" alt="${computerChoice}">`;
+        }
+
+        // 結果が画面に表示されるようにする
+        // ※プレイヤーの勝ちなら「あなたの勝ち」、コンピュータの勝ちなら「コンピュータの勝ち」、引き分けなら「引き分け」と表示する
+        function displayResult(result) {
+            const resultElement = document.getElementById('result');
+            if (!resultElement) {
+                const newResultElement = document.createElement('p');
+                newResultElement.id = 'result';
+                newResultElement.textContent = `結果: ${result}`;
+                document.body.appendChild(newResultElement);
+            } else {
+                resultElement.textContent = `結果: ${result}`;
+            }
+        }
+    </script>
+    
+</body>
+</html>
