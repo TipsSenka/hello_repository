@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>じゃんけんゲーム</title>
+    <!-- 
+    まずは、じゃんけんゲームを作るのに必要なプログラムの工程をリストアップします。
+
+    １．ユーザーがじゃんけんの手を選ぶ（グー、チョキ、パー）
+    ２．コンピュータがランダムにじゃんけんの手
+    ３．ユーザーとコンピュータの手を比較して勝敗を決定する
+    ４．勝敗の結果を表示する
+    ５．ユーザーがもう一度プレイするかどうかを選択する
+    ６．ユーザーがもう一度プレイする場合は、１に戻る。終了する場合は、ゲームを終了する。
+    ７．ゲーム終了時に、ユーザーの勝敗の統計を表示する（勝ち数、負け数、引き分け数）
+    ８．ゲーム終了時に、ユーザーがもう一度プレイするかどうかを選択する
+    ９．ユーザーがもう一度プレイする場合は、１に戻る。終了する場合は、ゲームを終了する。
+    １０．ゲーム終了時に、ユーザーの勝敗の統計を表示する（勝ち数、負け数、引き分け数）
+
+     -->    <!-- 1. HTML構造の作成: じゃんけんの選択肢と結果表示を用意します -->
+    <div class="container">
+        <h1>じゃんけんゲーム</h1>
+        <p>画像を選んでください</p>
+
+        <!-- 2. CSSスタイルの追加: 画像ボタンを見やすく整えます -->
+        <div class="choices">
+            <button class="choice" data-choice="グー">
+                <img src="画像/gu.png" alt="グー">
+                <span>グー</span>
+            </button>
+            <button class="choice" data-choice="チョキ">
+                <img src="画像/choki.png" alt="チョキ">
+                <span>チョキ</span>
+            </button>
+            <button class="choice" data-choice="パー">
+                <img src="画像/pa.png" alt="パー">
+                <span>パー</span>
+            </button>
+        </div>
+
+        <!-- 3. JavaScriptロジックの実装: 勝敗を判定して表示します -->
+        <div id="result">結果を表示します</div>
+        <div class="scoreboard">
+            <p>あなた: <span id="user-score">0</span></p>
+            <p>コンピュータ: <span id="computer-score">0</span></p>
+        </div>
+    </div>
+
+    <script>
+        // 4. バグ修正と最適化: 使いやすいようにコードを整理します
+        const choices = ["グー", "チョキ", "パー"];
+        const buttons = document.querySelectorAll(".choice");
+        const resultElement = document.getElementById("result");
+        const userScoreElement = document.getElementById("user-score");
+        const computerScoreElement = document.getElementById("computer-score");
+
+        let userScore = 0;
+        let computerScore = 0;
+
+        buttons.forEach((button) => {
+            button.addEventListener("click", () => {
+                const userChoice = button.dataset.choice;
+                const computerChoice = choices[Math.floor(Math.random() * choices.length)];
+                const result = judgeResult(userChoice, computerChoice);
+
+                resultElement.textContent = `あなた: ${userChoice} / コンピュータ: ${computerChoice} / ${result}`;
+
+                if (result === "勝ち") {
+                    userScore++;
+                } else if (result === "負け") {
+                    computerScore++;
+                }
+
+                userScoreElement.textContent = userScore;
+                computerScoreElement.textContent = computerScore;
+            });
+        });
+
+        function judgeResult(userChoice, computerChoice) {
+            if (userChoice === computerChoice) {
+                return "あいこ";
+            }
+
+            const winningMap = {
+                グー: "チョキ",
+                チョキ: "パー",
+                パー: "グー"
+            };
+
+            return winningMap[userChoice] === computerChoice ? "勝ち" : "負け";
+        }
+    </script>
+</head>
+<body>
+    
+</body>
+</html>
