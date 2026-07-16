@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+        <!-- まずはじゃんけんゲームを作るのに必要な工程をリストアップします
+     1. ユーザーが手を選ぶ（グー、チョキ、パー）
+     2. コンピュータがランダムに手を選ぶ
+     3. ユーザーとコンピュータの手を比較して勝敗を決定する
+     4. 勝敗の結果を表示する
+     5. ユーザーが再度プレイするかどうかを選択する
+     6. 必要に応じてスコアを記録する
+     7. ゲームを終了する
+
+     -->
+</head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>じゃんけんゲーム</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background: linear-gradient(135deg, #f9f4e8, #e8f3ff);
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2c2c2c;
+        }
+
+        .game {
+            width: min(900px, calc(100vw - 32px));
+            background: rgba(255, 255, 255, 0.92);
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.12);
+        }
+
+        h1 {
+            margin-top: 0;
+            text-align: center;
+        }
+
+        .choices {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        button.choice {
+            border: 0;
+            border-radius: 18px;
+            padding: 16px;
+            background: #fff;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        button.choice:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.12);
+        }
+
+        button.choice img {
+            width: 100%;
+            max-width: 140px;
+            height: auto;
+            display: block;
+            margin: 0 auto 10px;
+        }
+
+        .panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .box {
+            background: #f8fbff;
+            border-radius: 18px;
+            padding: 16px;
+            min-height: 120px;
+        }
+
+        .box h2 {
+            margin-top: 0;
+            font-size: 1.1rem;
+        }
+
+        .result {
+            margin-top: 18px;
+            padding: 16px;
+            border-radius: 18px;
+            background: #fff4d6;
+            font-weight: bold;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .score {
+            margin-top: 12px;
+            text-align: center;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="game">
+        <h1>じゃんけんゲーム</h1>
+
+        <!-- 1. ユーザーが手を選ぶ（グー、チョキ、パー） -->
+        <div class="choices">
+            <button class="choice" data-hand="gu">
+                <img src="gu.png" alt="グー">
+                グー
+            </button>
+            <button class="choice" data-hand="ch">
+                <img src="ch.png" alt="チョキ">
+                チョキ
+            </button>
+            <button class="choice" data-hand="pa">
+                <img src="pa.png" alt="パー">
+                パー
+            </button>
+        </div>
+
+        <div class="panel">
+            <div class="box">
+                <h2>あなたの手</h2>
+                <div id="userHand">まだ選んでいません</div>
+            </div>
+            <div class="box">
+                <h2>コンピュータの手</h2>
+                <div id="computerHand">まだ決まっていません</div>
+            </div>
+        </div>
+
+        <div class="result" id="result">ボタンを押して勝負を始めてください。</div>
+        <div class="score" id="score">勝ち: 0 / 負け: 0 / 引き分け: 0</div>
+    </div>
+
+    <script>
+        // 2. コンピュータがランダムに手を選ぶ
+        // 3. ユーザーとコンピュータの手を比較して勝敗を決定する
+        // 4. 勝敗の結果を表示する
+        const handMap = {
+            gu: 'グー',
+            ch: 'チョキ',
+            pa: 'パー'
+        };
+
+        const hands = ['gu', 'ch', 'pa'];
+        const userHand = document.getElementById('userHand');
+        const computerHand = document.getElementById('computerHand');
+        const result = document.getElementById('result');
+        const score = document.getElementById('score');
+
+        let winCount = 0;
+        let loseCount = 0;
+        let drawCount = 0;
+
+        function updateScore() {
+            score.textContent = `勝ち: ${winCount} / 負け: ${loseCount} / 引き分け: ${drawCount}`;
+        }
+
+        function judge(user, computer) {
+            if (user === computer) {
+                return 'draw';
+            }
+
+            if (
+                (user === 'gu' && computer === 'ch') ||
+                (user === 'ch' && computer === 'pa') ||
+                (user === 'pa' && computer === 'gu')
+            ) {
+                return 'win';
+            }
+
+            return 'lose';
+        }
+
+        document.querySelectorAll('.choice').forEach((button) => {
+            button.addEventListener('click', () => {
+                const userChoice = button.dataset.hand;
+
+                // 5. ユーザーが再度プレイできるように、毎回結果を更新する
+                const computerChoice = hands[Math.floor(Math.random() * hands.length)];
+                const outcome = judge(userChoice, computerChoice);
+
+                userHand.textContent = handMap[userChoice];
+                computerHand.textContent = handMap[computerChoice];
+
+                if (outcome === 'win') {
+                    winCount += 1;
+                    result.textContent = 'あなたの勝ちです！';
+                } else if (outcome === 'lose') {
+                    loseCount += 1;
+                    result.textContent = 'あなたの負けです。';
+                } else {
+                    drawCount += 1;
+                    result.textContent = 'あいこです。';
+                }
+
+                // 6. 必要に応じてスコアを記録する
+                updateScore();
+            });
+        });
+
+        // 7. ゲームを終了する
+        updateScore();
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+</body>
+
+</html>
