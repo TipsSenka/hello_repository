@@ -51,6 +51,12 @@
         });
 
         //ゲームの処理
+        const stats = {
+            userWins: 0,
+            computerWins: 0,
+            draws: 0
+        };
+
         function playGame(userHand) {
             //コンピューターの手をランダムで決定する
             const computerHand = hands[Math.floor(Math.random() * hands.length)];
@@ -68,14 +74,17 @@
             let result;
             if (userHand === computerHand) {
                 result = "引き分け";
+                stats.draws++;
             } else if (
                 (userHand === "グー" && computerHand === "チョキ") ||
                 (userHand === "チョキ" && computerHand === "パー") ||
                 (userHand === "パー" && computerHand === "グー")
             ) {
                 result = "あなたの勝ち";
+                stats.userWins++;
             } else {
                 result = "コンピューターの勝ち";
+                stats.computerWins++;
             }
             // 4.勝敗の結果をアラートではなくhtml上で表示する
             //コンピューターの手の画像+勝敗を表示する
@@ -89,9 +98,9 @@
             //画像をクリックするたびに、統計を更新するようにする
             //ここでは簡単に統計を更新するために、勝敗の結果を表示するたびに、統計を更新するようにする
             const statsElement = document.createElement("p");
-            statsElement.textContent = "統計\nあなたの勝ち: 0回\nコンピューターの勝ち: 0回\n引き分け: 0回";
+            statsElement.textContent = `統計\nあなたの勝ち: ${stats.userWins}回\nコンピューターの勝ち: ${stats.computerWins}回\n引き分け: ${stats.draws}回`;
             computerHandElement.appendChild(statsElement);
-            
+
 
 
 
@@ -101,7 +110,7 @@
             endGameButton.addEventListener("click", function() {
                 //ゲーム終了ボタンを押したら、統計を表示する
                 const statsElement = document.createElement("p");
-                statsElement.textContent = "ゲーム終了時の統計\nあなたの勝ち: 0回\nコンピューターの勝ち: 0回\n引き分け: 0回";
+                statsElement.textContent = `ゲーム終了時の統計\nあなたの勝ち: ${stats.userWins}回\nコンピューターの勝ち: ${stats.computerWins}回\n引き分け: ${stats.draws}回`;
                 computerHandElement.appendChild(statsElement);
             });
             computerHandElement.appendChild(endGameButton);
@@ -116,6 +125,10 @@
                 const statsElement = document.createElement("p");
                 statsElement.textContent = "統計をリセットしました";
                 computerHandElement.appendChild(statsElement);
+                // 統計を初期化する
+                stats.userWins = 0;
+                stats.computerWins = 0;
+                stats.draws = 0;
             });
             computerHandElement.appendChild(resetStatsButton);
 
