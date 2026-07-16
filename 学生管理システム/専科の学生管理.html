@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>専科の学生管理</title>
+    <!--
+        名簿の元データ
+        氏名	名	姓	メール アドレス
+奥田尚希 NHIW13A20302	奥田尚希	NHIW13A20302	nhs40549@nhs.hal.ac.jp
+清水一槻 NHIW13A20306	清水一槻	NHIW13A20306	nhs40189@nhs.hal.ac.jp
+長谷川優 NHIW13A20309	長谷川優	NHIW13A20309	nhs40349@nhs.hal.ac.jp
+大﨑陽介 NHIH13A20305	大﨑陽介	NHIH13A20305	nhs40384@nhs.hal.ac.jp
+岡本彩望 NHIW13A20301	岡本彩望	NHIW13A20301	nhs40640@nhs.hal.ac.jp
+加茂波瑠人 NHIW13A20304	加茂波瑠人	NHIW13A20304	nhs40213@nhs.hal.ac.jp
+祖父江巧樹 NHIW13A20307	祖父江巧樹	NHIW13A20307	nhs40301@nhs.hal.ac.jp
+山岡恭輔 NHIW13A20311	山岡恭輔	NHIW13A20311	nhs40668@nhs.hal.ac.jp
+岩田直也 NHIH12B20306	岩田直也	NHIH12B20306	nhs50103@nhs.hal.ac.jp
+亀山陽気 NHIA12A20304	亀山陽気	NHIA12A20304	nhs50246@nhs.hal.ac.jp
+出口大誠 NHIH12B20321	出口大誠	NHIH12B20321	nhs50489@nhs.hal.ac.jp
+ナカオ パガノ ガブリエル NHIH12B20322	ナカオ パガノ ガブリエル	NHIH12B20322	nhs50339@nhs.hal.ac.jp
+福山理子 NHIA12A20312	福山理子	NHIA12A20312	nhs50542@nhs.hal.ac.jp
+水谷倫子 NHIH12B20330	水谷倫子	NHIH12B20330	nhs50156@nhs.hal.ac.jp
+朝倉柚汰 NHIH12B20302	朝倉柚汰	NHIH12B20302	nhs50170@nhs.hal.ac.jp
+池田峰皐 NHIH12B20303	池田峰皐	NHIH12B20303	nhs50108@nhs.hal.ac.jp
+井上陽輝 NHIH12A20306	井上陽輝	NHIH12A20306	nhs50615@nhs.hal.ac.jp
+岩田綺華 NHIH12B20305	岩田綺華	NHIH12B20305	nhs50320@nhs.hal.ac.jp
+田中大雅 NHIH12A20315	田中大雅	NHIH12A20315	nhs50259@nhs.hal.ac.jp
+堀綾花 NHIH12A20323	堀綾花	NHIH12A20323	nhs50188@nhs.hal.ac.jp
+松井優冴 NHIH12A20324	松井優冴	NHIH12A20324	nhs50140@nhs.hal.ac.jp
+溝口翔斗 NHIH12A20325	溝口翔斗	NHIH12A20325	nhs50197@nhs.hal.ac.jp
+源水大智 NHIH42A20303	源水大智	NHIH42A20303	nhs50318@nhs.hal.ac.jp
+郭翰東 NHPI12A20305	郭翰東	NHPI12A20305	nhs50604@nhs.hal.ac.jp
+青山准 NHIT11A20301	青山准	NHIT11A20301	nhs60154@nhs.hal.ac.jp
+小川哲平 NHIT11A20309	小川哲平	NHIT11A20309	nhs60577@nhs.hal.ac.jp
+高橋大斗 NHIT11A20314	高橋大斗	NHIT11A20314	nhs60341@nhs.hal.ac.jp
+武田和大 NHIT11A20315	武田和大	NHIT11A20315	nhs60198@nhs.hal.ac.jp
+細井祐也 NHIT11A20319	細井祐也	NHIT11A20319	nhs60422@nhs.hal.ac.jp
+三輪夕翔 NHIT11A20320	三輪夕翔	NHIT11A20320	nhs60032@nhs.hal.ac.jp
+杉浦健太 NHIT11B20310	杉浦健太	NHIT11B20310	nhs60199@nhs.hal.ac.jp
+中村悠人 NHIT11B20314	中村悠人	NHIT11B20314	nhs60505@nhs.hal.ac.jp
+佐々木佑希 NHPI11A20307	佐々木佑希	NHPI11A20307	nhs60235@nhs.hal.ac.jp
+ネーカンート テル NHPI11A20312	ネーカンート テル	NHPI11A20312	nhs60382@nhs.hal.ac.jp
+メイ タジン アウン NHPI11A20321	メイ タジン アウン	NHPI11A20321	nhs60384@nhs.hal.ac.jp
+吉田匡志 NHPI11A20322	吉田匡志	NHPI11A20322	nhs60533@nhs.hal.ac.jp
+河井美唱鳥 NHNI21A20302	河井美唱鳥	NHNI21A20302	nhs60560@nhs.hal.ac.jp
+    -->
+    <script>
+        /**
+         * 学生データを表示する関数
+         */
+        function displayStudents(students) {
+            // 学生データを表示するテーブルのtbody要素を取得
+            const studentList = document.getElementById("student-list");
+            // 既存の学生データをクリア
+            studentList.innerHTML = "";
+            // 学生データが空の場合の処理
+            if (students.length === 0) {
+                const row = document.createElement("tr");
+                row.innerHTML = `<td colspan="3">学生データがありません。</td>`;
+                studentList.appendChild(row);
+                return;
+            }
+            // 学生データをテーブルに追加
+            students.forEach(student => {
+                // 学生データの行を作成
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${student.name}</td>
+                    <td>${student.id}</td>
+                    <td>${student.email}</td>
+                `;
+                studentList.appendChild(row);
+            });
+        }
+
+        /**
+         * 外部JSONから学生データを読み込んで表示
+         */
+        async function loadStudents() {
+            try {
+                const response = await fetch("students.json");
+                if (!response.ok) {
+                    throw new Error("学生データの読み込みに失敗しました。");
+                }
+
+                const students = await response.json();
+                displayStudents(students);
+            } catch (error) {
+                const studentList = document.getElementById("student-list");
+                const row = document.createElement("tr");
+                row.innerHTML = `<td colspan="3">${error.message}</td>`;
+                studentList.appendChild(row);
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>学生一覧</h1>
+    <!-- 学生データをテーブルに表示する -->
+    <table border="1">
+        <thead>
+            <tr>
+                <!-- 列名でソート順指定できるようにする  -->
+                <th><a href="#" onclick="sortStudents('name')">氏名</a></th>
+                <th><a href="#" onclick="sortStudents('id')">学籍番号</a></th>
+                <th><a href="#" onclick="sortStudents('email')">メールアドレス</a></th>
+            </tr>
+        </thead>
+        <script>
+            /**
+             * 学生データを指定されたプロパティでソートする関数
+             * @param {string} property - ソートするプロパティ名
+             */
+            function sortStudents(property) {
+                // ソートロジックを実装
+                // ここでは、学生データを取得して、指定されたプロパティでソートし、再度表示する処理を行う。
+                loadStudents(); // まずは学生データを読み込む
+                // その後、ソート処理を行う
+                // 例: students.sort((a, b) => a[property].localeCompare(b[property]));
+                // ソート後の学生データを表示する
+                displayStudents(students);
+            }
+            
+            // 学生データを読み込む関数を呼び出す
+            loadStudents();
+            // ソート処理を行う関数を定義する
+            function sortStudents(property) {
+                // 学生データを取得する
+                fetch("students.json")
+                    .then(response => response.json())
+                    .then(students => {
+                        // 指定されたプロパティでソートする
+                        students.sort((a, b) => a[property].localeCompare(b[property]));
+                        // ソート後の学生データを表示する
+                        displayStudents(students);
+                    })
+                    .catch(error => {
+                        const studentList = document.getElementById("student-list");
+                        const row = document.createElement("tr");
+                        row.innerHTML = `<td colspan="3">学生データの読み込みに失敗しました。</td>`;
+                        studentList.appendChild(row);
+                    });
+            }
+        </script>
+        <tbody id="student-list">
+        </tbody>
+    </table>
+    <script>
+        loadStudents();
+    </script>
+</body>
+</html>
