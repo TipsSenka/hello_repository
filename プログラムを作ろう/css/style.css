@@ -26,6 +26,8 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
+
+    border-radius: 10px;
 }
 
 /* プレイヤーの手を表示するエリア */
