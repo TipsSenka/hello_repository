@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ja">    
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>じゃんけんゲーム</title> 
+        <!-- 
+            まずは、じゃんけんゲームを作るのに必要なフローをリストアップします
+            １．ユーザーがじゃんけんの手を選ぶ
+            ２．コンピューターがじゃんけんの手をランダムで選ぶ（ユーザーが選択するまでコンピュータの手も表示しない）
+            3．ユーザーとコンピューターの手を比較して勝敗を決定する
+            4．勝敗の結果を表示する
+            5．勝敗をカウントする
+        -->
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                text-align: center;
+                margin: 20px;
+            }
+            button {
+                margin: 10px;
+                padding: 10px;
+                font-size: 16px;
+            }
+            img {
+                width: 50px;
+                height: 50px;
+            }
+            #computer-hand-image {
+                display: none;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- 1. ユーザーがじゃんけんの手を選ぶ 
+         ※"画像/gu.png"、"画像/tyoki.png"、"画像/pa.png"のが３つの画像を用意して、ボタンに表示する
+        -->
+        <div>
+            <h1>じゃんけんゲーム</h1>
+            <p>じゃんけんの手を選んでください</p>
+            <button id="gu"><img src="画像/gu.png" alt="グー"></button>
+            <button id="ch"><img src="画像/ch.png" alt="チョキ"></button>
+            <button id="pa"><img src="画像/pa.png" alt="パー"></button>
+        </div>
+
+        <!-- 2. コンピューターがじゃんけんの手をランダムで選ぶ（ ユーザー側と同じグーチョキパーの画像を使う） -->
+        <div>
+            <h2>コンピューターの手</h2>
+            <p id="computer-hand">まだ選ばれていません</p>
+            <img id="computer-hand-image" src="" alt="">
+        </div>
+
+        <!-- 3. ユーザーとコンピューターの手を比較して勝敗を決定する -->
+        <div>
+            <h2>勝敗の結果</h2>
+            <p id="result">まだ勝敗は決まっていません</p>
+        </div>
+        <div>
+            <h2>戦績</h2>
+            <p id="count">勝: 0, 負: 0, 引き分け: 0</p>
+        </div>
+        <script>
+            // コンピューターの手をランダムで選ぶ関数
+            function getComputerHand() {
+                const hands = ["グー", "チョキ", "パー"];
+                const randomIndex = Math.floor(Math.random() * hands.length);
+                return hands[randomIndex];
+            }
+
+            // 画像ファイル名をマップ
+            const imageFileMap = {"グー": "gu", "チョキ": "ch", "パー": "pa"};
+
+            // ユーザーがボタンをクリックしたときの処理
+            document.getElementById("gu").addEventListener("click", function() {
+                const userHand = "グー";
+                const computerHand = getComputerHand();
+                document.getElementById("computer-hand").textContent = computerHand;
+                const imgElement = document.getElementById("computer-hand-image");
+                imgElement.src = `画像/${imageFileMap[computerHand]}.png`;
+                imgElement.style.display = "inline-block";
+                determineWinner(userHand, computerHand);
+            });
+            document.getElementById("ch").addEventListener("click", function() {
+                const userHand = "チョキ";
+                const computerHand = getComputerHand();
+                document.getElementById("computer-hand").textContent = computerHand;
+                const imgElement = document.getElementById("computer-hand-image");
+                imgElement.src = `画像/${imageFileMap[computerHand]}.png`;
+                imgElement.style.display = "inline-block";
+                determineWinner(userHand, computerHand);
+            });
+            document.getElementById("pa").addEventListener("click", function() {
+                const userHand = "パー";
+                const computerHand = getComputerHand();
+                document.getElementById("computer-hand").textContent = computerHand;
+                const imgElement = document.getElementById("computer-hand-image");
+                imgElement.src = `画像/${imageFileMap[computerHand]}.png`;
+                imgElement.style.display = "inline-block";
+                determineWinner(userHand, computerHand);
+            });
+
+            // 勝敗を決定する関数
+            function determineWinner(userHand, computerHand) {
+                let result;
+                if (userHand === computerHand) {
+                    result = "引き分け";
+                } else if (
+                    (userHand === "グー" && computerHand === "チョキ") ||
+                    (userHand === "チョキ" && computerHand === "パー") ||
+                    (userHand === "パー" && computerHand === "グー")
+                ) {
+                    result = "あなたの勝ち";
+                } else {
+                    result = "コンピューターの勝ち";
+                }
+                document.getElementById("result").textContent = result;
+                updateCount(result);
+            }
+
+            // 勝敗をカウントする関数
+            function updateCount(result) {
+                const countElement = document.getElementById("count");
+                let [wins, losses, draws] = countElement.textContent.match(/\d+/g).map(Number);
+
+                switch (result) {
+                    case "あなたの勝ち":
+                        wins++;
+                        break;
+                    case "コンピューターの勝ち":
+                        losses++;
+                        break;
+                    case "引き分け":
+                        draws++;
+                        break;
+                }
+
+                countElement.textContent = `勝: ${wins}, 負: ${losses}, 引き分け: ${draws}`;
+            }
+        </script>
+    </body>
+</html>
