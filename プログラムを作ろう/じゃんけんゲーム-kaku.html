@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>じゃんけんゲーム</title>
+    <!--
+        まずは、じゃんけんゲームを作るのに必要な工程をリストアップします
+        1. ユーザーが手を選ぶ（グー、チョキ、パー）
+        2. コンピューターがランダムで手を選ぶ（グー、チョキ、パー）
+        3. ユーザーとコンピューターの手を比較して勝敗を判定する
+        4. 勝敗の結果を表示する
+        5. 必要に応じて、ゲームを繰り返すかどうかの選択肢を提供する
+        6. ゲームの結果を記録する
+        7. ゲームのUIを整える（ボタン、画像、テキストなど）
+        8. 必要に応じて、ゲームのルールや説明を表示する
+        9. ゲームの難易度や設定を変更できるようにする
+        10. ゲームの終了条件を設定する
+        11. ゲームのスコアやランキングを表示する
+    -->
+</head>
+<body>
+    <!-- 
+        1. ユーザーが手を選ぶ
+        ※ 画像/gu.png, 画像/ch.png, 画像/pa.pngを用いて画像を表示する 
+        ※idの名前はローマ字で統一することをおすすめします。gu、choki(ch)、paなど。
+    -->
+    <div>
+        <h1>じゃんけんゲーム</h1>
+        <p>手を選んでください：</p>
+        <button id="gu"><img src="画像/gu.png" alt="グー"></button>
+        <button id="cho"><img src="画像/ch.png" alt="チョキ"></button>
+        <button id="pa"><img src="画像/pa.png" alt="パー"></button>  
+    </div>
+    <!-- 
+        2. コンピューターがランダムで手を選ぶ
+        ※ コンピューターの手も画像で表示する
+        ※ ユーザーが手を選択した瞬間、結果のアラートより先に表示する
+    -->
+    <div id="computer-choice">
+        <h2>コンピューターの手：</h2>
+        <p id="computer-hand"></p>
+    </div>
+    <!-- 
+        4. 勝敗の結果を表示する
+        ※ 勝敗の結果をアラートで表示する
+    -->
+    <div id="result">
+        <h2>結果：</h2>
+        <p id="game-result"></p>
+    </div>
+    <!-- 
+        5. ゲームをリセットする
+        ※ ゲームをリセットするボタンを用意する
+    -->
+    <div id="reset">
+        <button id="reset-button">ゲームをリセット</button>
+    </div>
+    <script>
+        // 2. コンピューターがランダムで手を選ぶ
+        const hands = ['グー', 'チョキ', 'パー'];
+        const computerHandElement = document.getElementById('computer-hand');
+
+        function getComputerHand() {
+            const randomIndex = Math.floor(Math.random() * hands.length);
+            return hands[randomIndex];
+        }
+
+        // コンピュータの手も画像で表示する
+        // ユーザーが手を選択した瞬間、結果のアラートより先に表示する
+        function displayComputerHandImage(computerHand) {
+            let imagePath = '';
+            if (computerHand === 'グー') {
+                imagePath = '画像/gu.png';
+            } else if (computerHand === 'チョキ') {
+                imagePath = '画像/ch.png';
+            } else if (computerHand === 'パー') {
+                imagePath = '画像/pa.png';
+            }
+            computerHandElement.innerHTML = `<img src="${imagePath}" alt="${computerHand}">`;
+        }
+        // 3. プレイヤーとコンピューターの手を比較して勝敗を決定する
+        function determineWinner(playerHand, computerHand) {
+            if (playerHand === computerHand) {
+                return '引き分け';
+            } else if (
+                (playerHand === 'グー' && computerHand === 'チョキ') ||
+                (playerHand === 'チョキ' && computerHand === 'パー') ||
+                (playerHand === 'パー' && computerHand === 'グー')
+            ) {
+                return 'あなたの勝ち';
+            } else {
+                return 'コンピューターの勝ち';
+            }
+        }
+        // プレイヤーの手を選ぶボタンにイベントリスナーを追加
+        document.getElementById('gu').addEventListener('click', () => playGame('グー'));
+        document.getElementById('cho').addEventListener('click', () => playGame('チョキ'));
+        document.getElementById('pa').addEventListener('click', () => playGame('パー'));
+        // 勝敗の判定
+        function playGame(playerHand) {
+            const computerHand = getComputerHand();
+            displayComputerHandImage(computerHand);
+            const result = determineWinner(playerHand, computerHand);
+            document.getElementById('game-result').textContent = result;
+        }
+        // 5. ゲームをリセットする
+        document.getElementById('reset-button').addEventListener('click', () => {
+            computerHandElement.innerHTML = '';
+            document.getElementById('game-result').textContent = '';
+        });
+    </script>
+</body>
+</html>
