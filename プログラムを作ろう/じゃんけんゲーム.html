@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>じゃんけんゲーム</title>
+    <style>
+        body {
+            font-family: "Yu Gothic", sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 360px;
+        }
+
+        .choices {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+
+        .choice {
+            border: none;
+            background: #fff;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 8px;
+            transition: transform 0.2s;
+        }
+
+        .choice:hover {
+            transform: scale(1.05);
+        }
+
+        .choice img {
+            width: 80px;
+            height: 80px;
+            display: block;
+        }
+
+        .choice span {
+            display: block;
+            margin-top: 8px;
+            font-weight: bold;
+        }
+
+        #result {
+            margin: 16px 0;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .scoreboard {
+            display: flex;
+            justify-content: space-around;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <!-- まずはじゃんけんゲームを作るのに必要な工程をリストアップします
+     1. HTML構造の作成
+     2. CSSスタイルの追加
+     3. JavaScriptロジックの実装
+     4. バグ修正と最適化
+     5. デプロイ
+     6. テスト
+     7. ドキュメントの作成
+     8. リリース
+     9. フィードバックの収集
+     10. メンテナンス
+     -->
+
+    <!-- 1. HTML構造の作成: じゃんけんの選択肢と結果表示を用意します -->
+    <div class="container">
+        <h1>じゃんけんゲーム</h1>
+        <p>画像を選んでください</p>
+
+        <!-- 2. CSSスタイルの追加: 画像ボタンを見やすく整えます -->
+        <div class="choices">
+            <button class="choice" data-choice="グー">
+                <img src="画像/gu.png" alt="グー">
+                <span>グー</span>
+            </button>
+            <button class="choice" data-choice="チョキ">
+                <img src="画像/choki.png" alt="チョキ">
+                <span>チョキ</span>
+            </button>
+            <button class="choice" data-choice="パー">
+                <img src="画像/pa.png" alt="パー">
+                <span>パー</span>
+            </button>
+        </div>
+
+        <!-- 3. JavaScriptロジックの実装: 勝敗を判定して表示します -->
+        <div id="result">結果を表示します</div>
+        <div class="scoreboard">
+            <p>あなた: <span id="user-score">0</span></p>
+            <p>コンピュータ: <span id="computer-score">0</span></p>
+        </div>
+    </div>
+
+    <script>
+        // 4. バグ修正と最適化: 使いやすいようにコードを整理します
+        const choices = ["グー", "チョキ", "パー"];
+        const buttons = document.querySelectorAll(".choice");
+        const resultElement = document.getElementById("result");
+        const userScoreElement = document.getElementById("user-score");
+        const computerScoreElement = document.getElementById("computer-score");
+
+        let userScore = 0;
+        let computerScore = 0;
+
+        buttons.forEach((button) => {
+            button.addEventListener("click", () => {
+                const userChoice = button.dataset.choice;
+                const computerChoice = choices[Math.floor(Math.random() * choices.length)];
+                const result = judgeResult(userChoice, computerChoice);
+
+                resultElement.textContent = `あなた: ${userChoice} / コンピュータ: ${computerChoice} / ${result}`;
+
+                if (result === "勝ち") {
+                    userScore++;
+                } else if (result === "負け") {
+                    computerScore++;
+                }
+
+                userScoreElement.textContent = userScore;
+                computerScoreElement.textContent = computerScore;
+            });
+        });
+
+        function judgeResult(userChoice, computerChoice) {
+            if (userChoice === computerChoice) {
+                return "あいこ";
+            }
+
+            const winningMap = {
+                グー: "チョキ",
+                チョキ: "パー",
+                パー: "グー"
+            };
+
+            return winningMap[userChoice] === computerChoice ? "勝ち" : "負け";
+        }
+    </script>
+</body>
+</html>
