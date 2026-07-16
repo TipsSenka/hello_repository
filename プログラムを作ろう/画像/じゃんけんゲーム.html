@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>じゃんけんゲーム</title>
+    <!-- 
+        まずはじゃんけんゲームを作るのに必要な工程をリストアップします
+        1. ユーザーが手を選ぶためのUIを作る
+        2. コンピュータがランダムに手を選ぶ
+        3. ユーザーとコンピュータの手を比較して勝敗を判定する
+        4. 勝敗の結果を表示する
+        5. 必要に応じてスコアを管理する
+        6. リセットボタンを作る
+        7. CSSで見た目を整える
+        8. JavaScriptでゲームのロジックを実装する
+        9. イベントリスナーを設定してユーザーの操作に応じてゲームが進行するようにする
+        10. 必要に応じてアニメーションやエフェクトを追加
+
+    -->
+</head>
+<body>
+    <!-- 
+    1. ユーザーが手を選ぶためのUIを作る 
+    ＊画像/gu.png, pa.png, choki.pngを用意して、ボタンに画像を表示する
+    ＊idの名前はローマ字で統一する
+    -->
+    <div id="user-choice">
+        <button id="gu"><img src="gu.png" alt="グー"></button>
+        <button id="ch"><img src="ch.png" alt="チョキ"></button>
+        <button id="pa"><img src="pa.png" alt="パー"></button>
+    </div>
+    <!-- 
+    2. コンピュータがランダムに手を選ぶ
+    -->
+    <div id="computer-choice">
+        <p>コンピュータの手:</p>
+        <img id="computer-hand" src="" alt="コンピュータの手">
+        <!-- 最初はコンピューター側の手は空の状態にしておくには -->
+    </div>
+    <script>
+        // コンピュータの手をランダムに選ぶ関数
+        function getComputerChoice() {
+            const choices = ['gu', 'ch', 'pa'];
+            const randomIndex = Math.floor(Math.random() * choices.length);
+            return choices[randomIndex];
+        }
+    </script>
+    <!-- 
+    3. ユーザーとコンピュータの手を比較して勝敗を判定する
+    -->
+    <div id="result">
+        <p id="result-text"></p>
+    </div>
+    <script>
+        // 勝敗を判定する関数
+        function determineWinner(userChoice, computerChoice) {
+            if (userChoice === computerChoice) {
+                return '引き分け';
+            } else if (
+                // ユーザーが勝つ条件
+                (userChoice === 'gu' && computerChoice === 'ch') ||
+                (userChoice === 'ch' && computerChoice === 'pa') ||
+                (userChoice === 'pa' && computerChoice === 'gu')
+            ) {
+                return 'あなたの勝ち';
+            } else {
+                return 'コンピュータの勝ち';
+            }
+        }
+    </script>
+    <!-- 
+    4. 勝敗の結果を表示する
+    -->
+    <script>
+        // ユーザーの手を選んだときの処理
+        document.getElementById('user-choice').addEventListener('click', function(event) {
+            // ボタンがクリックされた場合のみ処理を行う
+            if (event.target.tagName === 'BUTTON' || event.target.tagName === 'IMG') {
+                // ユーザーの手を取得
+                const userChoice = event.target.id || event.target.parentElement.id;
+                // コンピュータの手を取得
+                const computerChoice = getComputerChoice();
+                // コンピュータの手を表示
+                document.getElementById('computer-hand').src = computerChoice + '.png';
+                const result = determineWinner(userChoice, computerChoice);
+                // 勝敗の結果を表示
+                document.getElementById('result-text').textContent = result;
+            }
+        });
+    </script> 
+    <!-- 5. 必要に応じてスコアを管理する -->
+    <div id="score">
+        <p>あなたのスコア: <span id="user-score">0</span></p>
+        <p>コンピュータのスコア: <span id="computer-score">0</span></p>
+    </div>
+    <script>
+        // スコアを管理する変数
+        let userScore = 0;
+        let computerScore = 0;
+        // 勝敗に応じてスコアを更新する関数
+        function updateScore(result) {
+            if (result === 'あなたの勝ち') {
+                userScore++;
+            } else if (result === 'コンピュータの勝ち') {
+                computerScore++;
+            }
+            document.getElementById('user-score').textContent = userScore;
+            document.getElementById('computer-score').textContent = computerScore;
+        }
+
+        // ユーザーの手を選んだときの処理にスコア更新を追加
+        document.getElementById('user-choice').addEventListener('click', function(event) {
+            // ボタンがクリックされた場合のみ処理を行う
+            if (event.target.tagName === 'BUTTON' || event.target.tagName === 'IMG') {
+                // ユーザーの手を取得
+                const userChoice = event.target.id || event.target.parentElement.id;
+                // コンピュータの手を取得
+                const computerChoice = getComputerChoice();
+                // コンピュータの手を表示
+                document.getElementById('computer-hand').src = computerChoice + '.png';
+                // 勝敗を判定して結果を表示
+                const result = determineWinner(userChoice, computerChoice);
+                // 勝敗の結果を表示
+                document.getElementById('result-text').textContent = result;
+                updateScore(result);
+            }
+        });
+        // 6. リセットボタンを作る
+        // リセットボタンの作成
+        const resetButton = document.createElement('button');
+        resetButton.textContent = 'リセット';
+        resetButton.id = 'reset-button';
+        // リセットボタンをスコアの下に追加
+        document.getElementById('score').appendChild(resetButton);
+        // リセットボタンがクリックされたときの処理
+        resetButton.addEventListener('click', function() {
+            userScore = 0;
+            computerScore = 0;
+            document.getElementById('user-score').textContent = userScore;
+            document.getElementById('computer-score').textContent = computerScore;
+            document.getElementById('result-text').textContent = '';
+            document.getElementById('computer-hand').src = '';
+        });
+        // 7. CSSで見た目を整える
+        // プレイヤーが押したら色を変える
+        const buttons = document.querySelectorAll('#user-choice button');
+        // ボタンがクリックされたときの処理
+        buttons.forEach(button => {
+            button.addEventListener('click', function() {
+                // すべてのボタンの色をリセット
+                buttons.forEach(btn => btn.style.backgroundColor = '');
+                // クリックされたボタンの色を変更
+                this.style.backgroundColor = 'lightblue';
+            });
+        });
+
+    </script>
+</body>
+</html>
