@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Janken</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: #2a2a2a;
+            background-image: 
+                repeating-linear-gradient(0deg, rgba(0,0,0,0.15) 0px, rgba(0,0,0,0.15) 2px, transparent 2px, transparent 4px),
+                repeating-linear-gradient(90deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 1px, transparent 1px, transparent 2px);
+            color: #d4a574;
+            padding: 40px 20px;
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 3em;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            letter-spacing: 3px;
+            border-bottom: 3px solid #8b7355;
+            padding-bottom: 20px;
+            text-transform: uppercase;
+            font-weight: bold;
+            grid-column: 1 / -1;
+        }
+
+        h2 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-left: 4px solid #d4a574;
+            padding-left: 15px;
+        }
+
+        div {
+            background-color: #1a1a1a;
+            border: 2px solid #8b7355;
+            border-radius: 0;
+            padding: 30px;
+            box-shadow: 
+                inset 0 1px 0 rgba(255,255,255,0.1),
+                inset 0 -1px 0 rgba(0,0,0,0.5),
+                0 10px 20px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        div::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                repeating-linear-gradient(0deg, rgba(139, 115, 85, 0.1) 0px, rgba(139, 115, 85, 0.1) 1px, transparent 1px, transparent 2px);
+            pointer-events: none;
+            border-radius: 0;
+        }
+
+        #user-choice,
+        #computer-choice,
+        #result {
+            width: 100%;
+        }
+
+        #result {
+            grid-column: 1 / -1;
+            text-align: center;
+        }
+
+        .choice {
+            width: 100px;
+            height: 100px;
+            margin: 20px;
+            padding: 15px;
+            border: 2px solid #8b7355;
+            background-color: #3a3a3a;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 
+                inset 0 2px 5px rgba(0,0,0,0.5),
+                0 4px 8px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .choice::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                linear-gradient(45deg, transparent 0%, rgba(212, 165, 116, 0.1) 50%, transparent 100%);
+            pointer-events: none;
+        }
+
+        #user-choice .choice:hover:not(.selected) {
+            background-color: #5a5a3a;
+            border-color: #d4a574;
+            transform: scale(1.1);
+            box-shadow: 
+                inset 0 2px 5px rgba(0,0,0,0.5),
+                0 4px 12px rgba(212, 165, 116, 0.4);
+        }
+
+        #user-choice .choice:active:not(.selected) {
+            transform: scale(0.95);
+        }
+
+        #user-choice .choice.selected {
+            transform: scale(1.5) !important;
+        }
+
+        #computer-choice .choice {
+            cursor: default;
+        }
+
+        #computer-choice .choice:hover {
+            background-color: #3a3a3a;
+            border-color: #8b7355;
+            transform: none;
+            box-shadow: 
+                inset 0 2px 5px rgba(0,0,0,0.5),
+                0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        #user-choice .choice:first-child {
+            display: inline-block;
+        }
+
+        p {
+            font-size: 1.1em;
+            margin: 15px 0;
+            line-height: 1.8;
+        }
+
+        #result-text {
+            font-size: 2em;
+            font-weight: bold;
+            color: #ff9999;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            min-height: 50px;
+        }
+
+        #result-text.win {
+            color: #ff9999;
+        }
+
+        #result-text.lose {
+            color: #6ba3ff;
+        }
+
+        #result-text.draw {
+            color: #ffdd00;
+        }
+
+        #computer-face {
+            font-size: 1em;
+            margin-left: 15px;
+        }
+
+        #score {
+            background-color: #0a0a0a;
+            border: 1px solid #8b7355;
+            padding: 15px;
+            border-radius: 0;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 1px;
+        }
+
+        button {
+            background-color: #8b7355;
+            color: #d4a574;
+            border: 2px solid #d4a574;
+            padding: 12px 30px;
+            font-size: 1em;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 
+                0 4px 8px rgba(0,0,0,0.5),
+                inset 0 1px 0 rgba(255,255,255,0.1);
+            margin-top: 20px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        button:hover {
+            background-color: #a89968;
+            color: #ffffff;
+            box-shadow: 
+                0 6px 12px rgba(212, 165, 116, 0.4),
+                inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+
+        button:active {
+            transform: translate(0, 2px);
+            box-shadow: 
+                0 2px 4px rgba(0,0,0,0.5),
+                inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+
+        #user-choice,
+        #computer-choice {
+            text-align: center;
+        }
+
+        img {
+            image-rendering: crisp-edges;
+        }
+    </style>
+
+    <!-- インタラクティブなじゃんけんゲーム -->
+
+    <!-- じゃんけんゲームの詳細な工程
+        1. ユーザーが「グー」「チョキ」「パー」のいずれかを選択する。
+        2. コンピュータがランダムに「グー」「チョキ」「パー」のいずれかを選択する。
+        3. ユーザーとコンピュータの選択を比較し、勝敗を判定する。
+        4. 勝敗の結果を画面に表示する。
+    -->
+    
+</head>
+<body>
+
+    <!-- 1.ユーザーが「グー」「チョキ」「パー」のいずれかを選択する。
+     ※「グー」は"gu.png"、「チョキ」は"ch.png"、「パー」は"pa.png"
+     ※ホバー時に画像の背景色を変更する。
+     ※選択結果を大きく表示する。
+    -->
+    <h1>Premium Janken</h1>
+    <div id="user-choice">
+        <h2>Your choice</h2>
+        <img src="画像/gu.png" alt="グー" id="gu" class="choice">
+        <img src="画像/ch.png" alt="チョキ" id="ch" class="choice">
+        <img src="画像/pa.png" alt="パー" id="pa" class="choice">
+    </div>
+
+    <!-- 2.コンピュータがランダムに「グー」「チョキ」「パー」のいずれかを選択する。
+     ※コンピュータは、ユーザーが選択した0.5～2秒後に選択する。
+     ※選択されるまで、コンピュータの画像はランダムに0.2秒ごとに切り替わる。
+     ※選択結果を大きく表示する。
+    -->
+    <div id="computer-choice">
+        <h2>Computer's Choice <span id="computer-face">😎</span></h2>
+        <img src="画像/gu.png" alt="Computer's Choice" id="computer-choice-img" class="choice">
+    </div>
+
+    <!-- 3.ユーザーとコンピュータの選択を比較し、勝敗を判定する。
+     ※勝敗の結果と、今までのスコアを画面に表示する。
+     ※リトライボタンを押すと、ユーザーとコンピュータの選択がリセットされる。
+    -->
+    <div id="result">
+        <h2>Result</h2>
+        <p id="result-text"></p>
+        <p id="score">Your Score: 0 | Computer's Score: 0</p>
+        <button id="retry-btn">Retry</button>
+    </div>
+
+    <script>
+        const choices = ['gu', 'ch', 'pa'];
+        let userScore = 0;
+        let computerScore = 0;
+        let isGameActive = false;
+        let computerRandomInterval = null;
+        let prevScoreDiff = 0;
+
+        // コンピュータの画像を常に切り替える
+        function startComputerRandomAnimation() {
+            const computerChoiceImg = document.getElementById('computer-choice-img');
+            computerRandomInterval = setInterval(() => {
+                const randomIndex = Math.floor(Math.random() * choices.length);
+                computerChoiceImg.src = `画像/${choices[randomIndex]}.png`;
+            }, 100);
+        }
+
+        // コンピュータのアニメーション停止
+        function stopComputerRandomAnimation() {
+            if (computerRandomInterval) {
+                clearInterval(computerRandomInterval);
+                computerRandomInterval = null;
+            }
+        }
+
+        // ユーザーの手をクリック
+        document.querySelectorAll('#user-choice .choice').forEach(choice => {
+            choice.addEventListener('click', () => {
+                if (isGameActive) return; // ゲーム中は選択不可
+
+                isGameActive = true;
+
+                const userChoice = choice.id;
+
+                // ユーザーの選択を大きく表示、他は暗くして選択不可に
+                document.querySelectorAll('#user-choice .choice').forEach(img => {
+                    if (img.id !== userChoice) {
+                        img.style.opacity = '0.3';
+                        img.style.pointerEvents = 'none';
+                    } else {
+                        img.classList.add('selected');
+                    }
+                });
+
+                playGame(userChoice);
+            });
+        });
+
+        function playGame(userChoice) {
+            const computerChoiceImg = document.getElementById('computer-choice-img');
+            let randomIndex = 0;
+
+            // コンピュータが手を決めるまでランダムに切り替え
+            const randomInterval = setInterval(() => {
+                randomIndex = Math.floor(Math.random() * choices.length);
+                computerChoiceImg.src = `画像/${choices[randomIndex]}.png`;
+            }, 100);
+
+            // コンピュータは0.1～0.4秒後に選択を確定
+            setTimeout(() => {
+                clearInterval(randomInterval);
+                stopComputerRandomAnimation();
+                const computerChoice = choices[randomIndex];
+                computerChoiceImg.src = `画像/${computerChoice}.png`;
+                // コンピュータの手も1.5倍に拡大
+                computerChoiceImg.style.transform = 'scale(1.5)';
+                determineWinner(userChoice, computerChoice);
+            }, Math.random() * 300 + 100);
+        }
+
+        function determineWinner(userChoice, computerChoice) {
+            let resultText = '';
+            let resultClass = '';
+            if (userChoice === computerChoice) {
+                resultText = 'DRAW!';
+                resultClass = 'draw';
+            } else if (
+                (userChoice === 'gu' && computerChoice === 'ch') ||
+                (userChoice === 'ch' && computerChoice === 'pa') ||
+                (userChoice === 'pa' && computerChoice === 'gu')
+            ) {
+                resultText = 'YOU WIN!';
+                resultClass = 'win';
+                userScore++;
+            } else {
+                resultText = 'YOU LOSE!';
+                resultClass = 'lose';
+                computerScore++;
+            }
+            const resultElement = document.getElementById('result-text');
+            resultElement.textContent = resultText;
+            resultElement.className = resultClass;
+            document.getElementById('score').textContent = `Your Score: ${userScore} | Computer's Score: ${computerScore}`;
+            updateComputerFace(resultClass);
+        }
+
+        function updateComputerFace(result = null) {
+            const scoreDiff = computerScore - userScore;
+            const face = document.getElementById('computer-face');
+            
+            // 試合結果がある場合（その直後）
+            if (result === 'lose') {
+                // コンピュータが勝った
+                if (prevScoreDiff === 0) {
+                    // 初回の引き分けから勝つ
+                    face.textContent = '😙';
+                } else if (scoreDiff > 0) {
+                    // 有利な時に勝つ
+                    face.textContent = '😎';
+                } else {
+                    // 不利な時に勝つ
+                    face.textContent = '🥹';
+                }
+            } else if (result === 'win') {
+                // コンピュータが負けた
+                if (prevScoreDiff === 0) {
+                    // 初回の引き分けから負ける
+                    face.textContent = '😭';
+                } else if (prevScoreDiff > 0) {
+                    // 有利な時に負ける
+                    face.textContent = '🙄';
+                } else {
+                    // 不利な時に負ける
+                    face.textContent = '💀';
+                }
+            } else if (result === 'draw') {
+                // 引き分け
+                face.textContent = '🤨';
+            } else {
+                // 試合結果がない場合（リトライ後など）、スコア差のみで判定
+                if (scoreDiff > 0) {
+                    // コンピュータが有利
+                    face.textContent = '😏';
+                } else if (scoreDiff < 0) {
+                    // コンピュータが不利
+                    if (prevScoreDiff === 0) {
+                        // 引き分けから不利に
+                        face.textContent = '😭';
+                    } else if (prevScoreDiff > 0) {
+                        // 有利から不利に
+                        face.textContent = '😱';
+                    } else {
+                        // 不利が継続
+                        face.textContent = '😞';
+                    }
+                } else {
+                    // 互角
+                    if (prevScoreDiff > 0) {
+                        // 有利から引き分けに
+                        face.textContent = '😰';
+                    } else if (prevScoreDiff < 0) {
+                        // 不利から引き分けに
+                        face.textContent = '🤞';
+                    } else {
+                        // 初回の引き分け
+                        face.textContent = '😗';
+                    }
+                }
+            }
+            
+            prevScoreDiff = scoreDiff;
+        }
+
+        // リトライボタン - スコアは保持、状態はリセット
+        document.getElementById('retry-btn').addEventListener('click', () => {
+            // ユーザーの選択状態をリセット
+            document.querySelectorAll('#user-choice .choice').forEach(img => {
+                img.style.opacity = '1';
+                img.style.transform = 'scale(1)';
+                img.style.pointerEvents = 'auto';
+                img.classList.remove('selected');
+            });
+
+            // コンピュータの表示をリセット
+            const computerChoiceImg = document.getElementById('computer-choice-img');
+            computerChoiceImg.src = '画像/gu.png';
+            computerChoiceImg.style.transform = 'scale(1)';
+            document.getElementById('result-text').textContent = '';
+
+            // スコアに基づいて顔文字を更新
+            updateComputerFace();
+
+            // ゲーム状態をリセット
+            isGameActive = false;
+            startComputerRandomAnimation();
+        });
+
+        // ページロード時にコンピュータの画像を切り替え開始
+        window.addEventListener('load', () => {
+            startComputerRandomAnimation();
+            updateComputerFace();
+        });
+    </script>    
+</body>
+</html>
