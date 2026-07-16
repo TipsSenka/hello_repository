@@ -23,3 +23,21 @@ def determine_winner(user_choice, computer_choice):
         return "ユーザーの勝ち"
     else:
         return "コンピュータの勝ち"
+
+#メインのゲームループ
+def main():
+    print("じゃんけんゲームへようこそ！")
+    while True:
+        user_choice = get_user_choice()
+        computer_choice = get_computer_choice()
+        print(f"コンピュータの選択: {computer_choice}")
+        result = determine_winner(user_choice, computer_choice)
+        print(f"結果: {result}")
+
+        play_again = input("もう一度プレイしますか？ (はい/いいえ): ")
+        if play_again.lower() != "はい":
+            print("ゲームを終了します。")
+            break
+
+if __name__ == "__main__":
+    main()
