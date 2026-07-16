@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>じゃんけんゲーム</title>
+    <!-- まず、じゃんけんゲームに必要なフロー工程をリストアップします
+     1.ユーザーが手を選ぶ(グー、チョキ、パー)
+     2.コンピュータが手を選ぶ(グー、チョキ、パー)
+     3.ユーザーとコンピュータの手を比較して勝敗を判定する
+     4.勝敗を表示する
+     5.ゲームを続けるかどうかを尋ねる
+     6.ゲームを続ける場合は1に戻る
+     7.ゲームを終了する場合はゲーム終了メッセージを表示する
+      -->
+</head>
+<body>
+    <!-- 1. ユーザーが手を選ぶ -->
+    <div id="user-choice">
+        <h2>あなたの手を選んでください</h2>
+        <button type="button" id="gu" data-hand="gu">
+            <img src="画像/gu.png" alt="グー">
+        </button>
+        <button type="button" id="choki" data-hand="choki">
+            <img src="画像/ch.png" alt="チョキ">
+        </button>
+        <button type="button" id="pa" data-hand="pa">
+            <img src="画像/pa.png" alt="パー">
+        </button>
+    </div>
+
+    <!-- 2. コンピュータの手を表示する -->
+    <div id="computer-choice">
+        <h2>コンピュータの手</h2>
+        <img id="computer-hand" src="" alt="選択中..." hidden>
+        <p id="computer-hand-label">選択中...</p>
+    </div>
+
+    <!-- 3. 勝敗を表示する（最初は非表示） -->
+    <div id="result" hidden>
+        <h2>勝敗</h2>
+        <p id="result-text"></p>
+    </div>
+
+    <!-- 4. 続ける／終了する -->
+    <div id="continue" hidden>
+        <p>ゲームを続けますか？</p>
+        <button type="button" id="btn-continue">続ける</button>
+        <button type="button" id="btn-end">終了する</button>
+    </div>
+
+    <!-- 5. 終了メッセージ -->
+    <div id="end-message" hidden>
+        <p>ゲームを終了しました。ありがとうございました。</p>
+    </div>
+
+    <script>
+        // --- 手の定義（id / 画像 / 表示名） ---
+        const hands = {
+            gu:    { image: '画像/gu.png', label: 'グー' },
+            choki: { image: '画像/ch.png', label: 'チョキ' },
+            pa:    { image: '画像/pa.png', label: 'パー' }
+        };
+        const handKeys = Object.keys(hands);
+
+        // --- 勝敗判定（引き分け: 0 / 勝ち: 1 / 負け: 2） ---
+        // 各手が勝つ相手だけを定義すればよい
+        const winsAgainst = {
+            gu: 'choki',
+            choki: 'pa',
+            pa: 'gu'
+        };
+
+        function judge(userChoice, computerChoice) {
+            if (userChoice === computerChoice) return 0;
+            return winsAgainst[userChoice] === computerChoice ? 1 : 2;
+        }
+
+        // --- 1手分のゲーム実行 ---
+        function playGame(userChoice) {
+            const computerChoice = handKeys[Math.floor(Math.random() * handKeys.length)];
+
+            // コンピュータの手を表示
+            const computerHandImg = document.getElementById('computer-hand');
+            computerHandImg.src = hands[computerChoice].image;
+            computerHandImg.alt = hands[computerChoice].label;
+            computerHandImg.hidden = false;
+            document.getElementById('computer-hand-label').textContent = hands[computerChoice].label;
+
+            // 勝敗を表示
+            const resultMessages = ['引き分けです', 'あなたの勝ちです', 'あなたの負けです'];
+            document.getElementById('result-text').textContent = resultMessages[judge(userChoice, computerChoice)];
+            document.getElementById('result').hidden = false;
+
+            // 手の選択を止め、続ける／終了を尋ねる
+            setChoiceEnabled(false);
+            document.getElementById('continue').hidden = false;
+        }
+
+        // --- 手ボタンの有効／無効 ---
+        function setChoiceEnabled(enabled) {
+            document.querySelectorAll('#user-choice button').forEach((button) => {
+                button.disabled = !enabled;
+            });
+        }
+
+        // --- 次のラウンドへ戻す ---
+        function resetRound() {
+            document.getElementById('computer-hand').hidden = true;
+            document.getElementById('computer-hand').src = '';
+            document.getElementById('computer-hand-label').textContent = '選択中...';
+            document.getElementById('result').hidden = true;
+            document.getElementById('result-text').textContent = '';
+            document.getElementById('continue').hidden = true;
+            setChoiceEnabled(true);
+        }
+
+        // --- イベント設定 ---
+        document.querySelectorAll('#user-choice button').forEach((button) => {
+            button.addEventListener('click', () => playGame(button.dataset.hand));
+        });
+
+        document.getElementById('btn-continue').addEventListener('click', resetRound);
+
+        document.getElementById('btn-end').addEventListener('click', () => {
+            document.getElementById('user-choice').hidden = true;
+            document.getElementById('computer-choice').hidden = true;
+            document.getElementById('result').hidden = true;
+            document.getElementById('continue').hidden = true;
+            document.getElementById('end-message').hidden = false;
+        });
+    </script>
+</body>
+</html>
