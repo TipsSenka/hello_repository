@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>じゃんけんゲーム</title>
+  <!-- 
+    まずは、じゃんけんゲームを作るのに必要な工程をリストアップします。
+    1. ユーザーが手を選ぶ（グー、チョキ、パー）
+    2. コンピュータがランダムに手を選ぶ
+    3. 勝敗を判定する
+    4. 結果を表示する
+    5. 必要に応じて、スコアを管理する
+    6. ユーザーが再度プレイできるようにする
+    7. UIを整える（ボタン、画像、テキストなど）
+    8. 必要に応じて、アニメーションや効果音を追加する
+    9. コードの整理と最適化を行う
+    10. デバッグとテストを行う
+  -->
+</head>
+<body>
+  <!--
+    1.ユーザーが手を選ぶ（グー、チョキ、パー）
+    ※"画像/gu.png"、"画像/ch.png"、"画像/pa.png"の3つの画像を用意して、ボタンとして表示する。
+  -->
+  <div>
+    <h2>じゃんけんゲーム</h2>
+    <p>あなたの手を選んでください：</p>
+    <button id="rock"><img src="画像/gu.png" alt="グー"></button>
+    <button id="scissors"><img src="画像/ch.png" alt="チョキ"></button>
+    <button id="paper"><img src="画像/pa.png" alt="パー"></button>
+  </div>
+  <!-- 2.コンピュータがランダムに手を選ぶ -->
+  <div>
+    <h3>コンピュータの手：</h3>
+    <p id="computer-choice">まだ選ばれていません</p>
+  </div>
+  <script>
+    // ここにJavaScriptコードを記述する
+    // 2.コンピュータがランダムに手を選ぶ
+    // ユーザーが手を選んだあとに、コンピューターの手をランダムに手を選ぶ処理を追加する。
+    const choices = ['グー', 'チョキ', 'パー'];
+    // ユーザーの手を選ぶボタンのイベントリスナーを設定する
+    document.getElementById('rock').addEventListener('click', () => playGame('グー'));
+    document.getElementById('scissors').addEventListener('click', () => playGame('チョキ'));
+    document.getElementById('paper').addEventListener('click', () => playGame('パー'));
+
+    function playGame(userChoice) {
+      // コンピュータの手をランダムに選ぶ
+      const computerChoice = choices[Math.floor(Math.random() * choices.length)];
+      // コンピュータの手を表示する
+      document.getElementById('computer-choice').textContent = computerChoice;
+      // 勝敗を判定する
+      const result = determineWinner(userChoice, computerChoice);
+      // 結果を表示する
+      alert(`あなたの手: ${userChoice}\nコンピュータの手: ${computerChoice}\n結果: ${result}`);
+    }
+
+    function determineWinner(userChoice, computerChoice) {
+      if (userChoice === computerChoice) {
+        return '引き分け';
+      } else if (
+        (userChoice === 'グー' && computerChoice === 'チョキ') ||
+        (userChoice === 'チョキ' && computerChoice === 'パー') ||
+        (userChoice === 'パー' && computerChoice === 'グー')
+      ) {
+        return 'あなたの勝ち';
+      } else {
+        return 'コンピュータの勝ち';
+      }
+    }
+
+  </script>
+</body>
+</html>
