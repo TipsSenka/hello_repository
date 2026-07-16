@@ -43,6 +43,13 @@
     <!-- 勝敗を表示する -->
     <div id="result"></div>
 
+    <!-- 勝敗の数を表示する -->
+    <div id="statistics">
+        <p>勝ち: <span id="wins">0</span></p>
+        <p>負け: <span id="losses">0</span></p>
+        <p>引き分け: <span id="draws">0</span></p>
+    </div>
+
     <script>
         //３．ユーザーとコンピュータの手を比較して勝敗を判定する
         function playGame(userHand) {
@@ -78,6 +85,15 @@
 
             // 勝敗の結果を表示する
             document.getElementById('result').textContent = result;
+
+            // 勝敗の数を更新する
+            if (result === 'あなたの勝ち') {
+                document.getElementById('wins').textContent++;
+            } else if (result === 'コンピュータの勝ち') {
+                document.getElementById('losses').textContent++;
+            } else {
+                document.getElementById('draws').textContent++;
+            }
         }
 
         //５．もう一度プレイするかどうかをユーザーに尋ねる
