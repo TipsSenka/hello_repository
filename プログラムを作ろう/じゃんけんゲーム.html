@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>じゃんけんゲーム</title>
+    <!--
+        まずは、じゃんけんゲームを作るのに必要な工程をリストアップします
+        1. ユーザーが手を選ぶ（グー、チョキ、パー）
+        2. コンピュータがランダムで手を選ぶ（グー、チョキ、パー）
+        3. ユーザーとコンピュータの手を比較して勝敗を判定する
+        4. 勝敗の結果を表示する
+        5. 必要に応じて、再戦するかどうかを選択できるようにする
+        6. ゲームの結果を記録する（勝ち、負け、引き分けの回数をカウントする）
+        7. ゲームのUIを整える（ボタンや表示エリアのデザイン）
+        8. 必要に応じて、ゲームのルールや説明を表示する
+        9. ゲームの終了条件を設定する（例：一定回数の勝敗で終了）
+        10. ゲームの結果を保存する（ローカルストレージやサーバーに保存する）
+    -->
+</head>
+<body>
+    <!--
+    　　 1.ユーザーが手を選ぶ
+        ※"画像/gu.png"、"画像/choki.png"、"画像/pa.png"の3つの画像を用意して、ボタンに表示する。
+        ※ idの名前はローマ字で統一する。 gu、choki(ch)、paの3つのidを用意する。
+     -->
+    <div id="user-choice">
+        <h2>あなたの手を選んでください</h2>
+        <button id="gu"><img src="画像/gu.png" alt="グー"></button>
+        <button id="choki"><img src="画像/ch.png" alt="チョキ"></button>
+        <button id="pa"><img src="画像/pa.png" alt="パー"></button>
+    </div>
+    <!--
+    　　 2.コンピュータがランダムで手を選ぶ
+     -->
+    <div id="computer-choice">
+        <h2>コンピュータの手</h2>
+        <p id="computer-hand">選択待ち...</p>
+    </div>
+    <script>
+        // 2.コンピュータがランダムで手を選ぶ
+        // ※ユーザーが手を選んだ後に、コンピュータの手をランダムで決定する。
+        const hands = ["グー", "チョキ", "パー"];
+        // ユーザーの手を選ぶボタンのイベントリスナーを設定
+        // イベントリスナーとは、ユーザーがボタンをクリックしたときに実行される関数のことです。
+        // クリックイベントが発生したときに、コンピュータの手をランダムで決定し、結果を表示する関数を呼び出す。
+        document.getElementById("gu").addEventListener("click", function() {
+            playGame("グー");
+            // クリックイベントが発生したときに、コンピュータの手をランダムで決定し、結果を表示する関数を呼び出す。
+            // playGame関数を呼び出すときに、ユーザーの手を引数として渡す。
+            // 例：playGame("グー")、playGame("チョキ")、playGame("パー")
+            // playGame関数の中で、コンピュータの手をランダムで決定し、結果を表示する。
+            // 例：playGame("グー")を呼び出すと、コンピュータの手がランダムで決定され、結果が表示される。
+            // 例：playGame("チョキ")を呼び出すと、コンピュータの手がランダムで決定され、結果が表示される。
+            // 例：playGame("パー")を呼び出すと、コンピュータの手がランダムで決定され、結果が表示される。
+        });
+        document.getElementById("choki").addEventListener("click", function() {
+            playGame("チョキ");
+        });
+        document.getElementById("pa").addEventListener("click", function() {
+            playGame("パー");
+        });
+        // ゲームを実行する関数
+        function playGame(userHand) {
+            // コンピュータの手をランダムで決定
+            const computerHand = hands[Math.floor(Math.random() * hands.length)];
+            // コンピュータの手を表示
+            // ※コンピュータの手も画像で表示する　"画像/gu.png"、"画像/ch.png"、"画像/pa.png"の3つの画像を
+            // 用意して、コンピュータの手を表示する。
+            document.getElementById("computer-hand").innerHTML = `<img src="画像/${computerHand === "グー" ? "gu" : computerHand === "チョキ" ? "ch" : "pa"}.png" alt="${computerHand}">`;
+
+            // 3.ユーザーとコンピュータの手を比較して勝敗を判定する
+            // 勝敗を判定
+            const result = judge(userHand, computerHand);
+            // 4.勝敗の結果を表示する
+            // ※コンピュータの手を画面に表示→勝敗判定→結果を表示する
+            document.getElementById("result").textContent = result;
+        }
+        // 3.ユーザーとコンピュータの手を比較して勝敗を判定する
+        // 勝敗を判定する関数
+        function judge(userHand, computerHand) {
+            // 勝敗の判定ロジック
+            if (userHand === computerHand) {
+                return "引き分けです！";
+            } else if (
+                // ユーザーが勝つ条件
+                (userHand === "グー" && computerHand === "チョキ") ||
+                (userHand === "チョキ" && computerHand === "パー") ||
+                (userHand === "パー" && computerHand === "グー")
+            ) {
+                return "あなたの勝ちです！";
+            } else {
+                return "あなたの負けです！";
+            }
+        }
+    </script>
+</body>
+</html>
