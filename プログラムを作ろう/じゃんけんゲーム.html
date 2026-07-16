@@ -1,0 +1,89 @@
+じゃんけんゲーム.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>じゃんけんゲーム</title>
+    <!-- 
+        まずはじゃんけんゲームを作るのに必要な工程をリストアップします。
+        1. ユーザーが手を選ぶ（グー、チョキ、パー）
+        2. コンピュータがランダムで手を選ぶ
+        3. 勝敗を判定する
+        4.コンピューターとユーザーの手をhtmlに表示する
+        5. 結果を表示する  
+        6. 必要に応じてリセットや再戦の機能を追加する
+        7. デザインやスタイルを整える
+        8. 追加機能（スコアの記録、アニメーションなど）を検討する
+        9. コードの整理や最適化を行う
+        10. テストを行い、バグを修正する
+    -->
+</head>
+<body>
+    <!--
+         1. ユーザーが手を選ぶ（グー、チョキ、パー）
+         ※画像/gu.png、画像/ch.png、画像/pa.pngを使用する
+         ※idの名前はローマ字で統一する。gu,choki(ch),paのようにする。
+    -->
+    <div id="user-choice">
+        <h2>あなたの手を選んでください</h2>
+        <button onclick="userChoice('グー')" id="gu"><img src="画像/gu.png" alt="グー"></button>
+        <button onclick="userChoice('チョキ')" id="choki"><img src="画像/ch.png" alt="チョキ"></button>
+        <button onclick="userChoice('パー')" id="pa"><img src="画像/pa.png" alt="パー"></button>
+    </div>
+    <div id="computer-choice">
+        <h2>コンピュータの手</h2>
+        <p id="computer-hand">まだ選ばれていません</p>
+    </div>
+    <script>
+        //1.ユーザーが手を選ぶ
+        function userChoice(hand) {
+            const hands = ['グー', 'チョキ', 'パー'];
+            const computerHand = computerChoice();
+            document.getElementById('computer-hand').textContent = computerHand;
+            displayResult(hand, computerHand);
+        }
+        //2.コンピュータがランダムで手を選ぶ
+        function computerChoice() {
+            const hands = ['グー', 'チョキ', 'パー'];
+            return hands[Math.floor(Math.random() * hands.length)];
+        }
+        //3.勝敗を判定する
+        function determineWinner(userHand, computerHand) {
+            if (userHand === computerHand) {
+                return '引き分け';
+            } else if (
+                (userHand === 'グー' && computerHand === 'チョキ') ||
+                (userHand === 'チョキ' && computerHand === 'パー') ||
+                (userHand === 'パー' && computerHand === 'グー')
+            ) {
+                return 'あなたの勝ち';
+            } else {
+                return 'コンピュータの勝ち';
+            }
+        }
+        //4.コンピューターとユーザの手をalertではなくhtmlに表示する
+        function displayResult(userHand, computerHand) {
+            const result = determineWinner(userHand, computerHand);
+            const resultDiv = document.createElement('div');
+            resultDiv.innerHTML = `<h2>結果</h2>
+                                   <p>あなたの手: ${userHand}</p>
+                                   <p>コンピュータの手: ${computerHand}</p>
+                                   <p>${result}</p>`;
+            document.body.appendChild(resultDiv);
+        }
+        //5.結果をalertで表示する
+        function displayResultAlert(userHand, computerHand) {
+            const result = determineWinner(userHand, computerHand);
+            alert(`あなたの手: ${userHand}\nコンピュータの手: ${computerHand}\n${result}`);
+        }
+        //再戦するかどうかを確認する
+        function askForRematch() {
+            const rematch = confirm('もう一度プレイしますか？');
+            if (rematch) {
+                location.reload();
+            }
+        }
+    </script>
+</body>
+</html>
