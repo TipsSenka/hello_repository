@@ -1,12 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>じゃんけんゲーム</title>
+    <!-- じゃんけんゲームを作るために必要な工程をリストアップする
+        1. HTMLの基本構造を作成する
+        2. CSSでスタイルを整える
+        3. JavaScriptでじゃんけんの手を選ぶボタンを作成する
+        4. プレイヤーの手を取得する
+        5. コンピュータの手をランダムに生成する
+        6. 勝敗を判定する関数を作成する
+        7. 勝敗結果を表示する
+        8. スコアを管理する機能を追加する
+        9. リセットボタンを作成してスコアをリセットできるようにする
+        10. ゲームのルールや遊び方を説明するセクションを追加する
+      -->
+
+    <link rel="stylesheet" href="../css/style.css">
 </head>
+
 <body>
-    <div id></div>
-    
+    <div id="all">
+        <div id="field">
+            <header>
+                <h1>じゃんけんゲーム</h1>
+            </header>
+            <div id="ai">
+                <p>カスAIコパイロット
+                </p>
+                <p id="ai_choice">はよ選べカス</p>
+                <div id="img_content_ai">
+                <img id="img_ai" src="../画像/gu.png" alt="AI">
+                </div>
+            </div>
+            <div id="player">
+                <!-- プレイヤーの手を表示する gu,ch,pa  ../画像/<手の名前>.png-->
+                <!-- ul,liの中に入れる -->
+                <!--liにIDつけるplayer_<手の名前>  + classでplayer_hand dataターゲットターゲット-->
+                <p>
+                    お前:賢者(アホ)
+                </p>
+                <p id="player_choice">はよ選べカス</p>
+                <ul id="ul_img_player">
+                    <li class="li_player_hand" data-hand="gu"><img src="../画像/gu.png" alt="グー"></li>
+                    <li class="li_player_hand" data-hand="ch"><img src="../画像/ch.png" alt="チョキ"></li>
+                    <li class="li_player_hand" data-hand="pa"><img src="../画像/pa.png" alt="パー"></li>
+                </ul>
+                <!-- 決定ボタン -->
+                <button id="btn_decide">決定</button>
+
+                <!-- 勝敗結果を表示する -->
+                <p id="result">勝敗結果</p>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- jq -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="../js/main.js"></script>
+
 </body>
+
 </html>

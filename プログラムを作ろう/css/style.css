@@ -1,0 +1,92 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+
+    color: #fff;
+}
+
+#all {
+    width: 100%;
+    height: 100vh;
+    background-color: #111;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#field {
+    width: 80%;
+    height: 80%;
+
+    background-color: #333;
+    outline: 1px solid #888;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+/* プレイヤーの手を表示するエリア */
+#ul_img_player {
+    width: 100%;
+    height: 60%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0;
+
+    gap: 10px;
+}
+
+/* AIの手を表示するエリア */
+#img_content_ai {
+    width: 120px;
+    aspect-ratio: 1;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* プレイヤーの手 */
+.li_player_hand {
+    width: 120px;
+    aspect-ratio: 1;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 10px;
+    outline: 1px solid #888;
+}
+
+/* アクティブな手 */
+.li_player_hand.active {
+    outline: 5px solid orange;
+}
+
+/* ボタンcss */
+#btn_decide {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#btn_decide:hover {
+    background-color: #0056b3;
+}
+
+/* 勝敗結果 */
+#result {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 20px;
+}
