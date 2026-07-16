@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>じゃんけんゲーム</title>
+    <!-- 
+        まずは、じゃんけんゲームを作るのに必要な工程をリストアップします
+        1. ユーザーが手を選ぶ（グー、チョキ、パー）
+        2. コンピュータがランダムに手を選ぶ
+        3. ユーザーとコンピュータの手を比較して勝敗を決定する
+        4. 結果を表示する
+        5. 必要に応じて、再戦するかどうかを選択できるようにする
+        6. ゲームのルールや説明を表示する
+        7. デザインやスタイルを整える
+        8. 必要に応じて、スコアを記録する機能を追加する
+        9. ゲームの終了条件を設定する（例：一定回数の勝敗で終了）
+        10. 必要に応じて、音声やアニメーションを追加する
+        11. 必要に応じて、ユーザーの入力を検証する（例：無効な入力を防ぐ）
+        12. 必要に応じて、ゲームの難易度を調整する（例：コンピュータの手の選び方を変更する）
+        13. 必要に応じて、ゲームのテーマやキャラクターを追加する
+        14. 必要に応じて、ゲームの進行状況を保存する機能を追加する
+        15. 必要に応じて、ゲームのランキング機能を追加する
+    -->
+    <style>
+        body {
+            font-family: sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 40px 20px;
+            background: #f5f7fb;
+        }
+
+        h1 {
+            margin-bottom: 12px;
+        }
+
+        button {
+            border: 0;
+            background: white;
+            padding: 12px;
+            margin: 8px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            cursor: pointer;
+        }
+
+        button img {
+            width: 90px;
+            height: 90px;
+            display: block;
+        }
+
+        .hand-area {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+            margin: 24px 0;
+        }
+
+        .hand-box {
+            width: 160px;
+            min-height: 180px;
+            background: #ffffff;
+            border: 2px solid #d9e2ef;
+            border-radius: 18px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .hand-box h2 {
+            font-size: 1rem;
+            margin: 0 0 12px;
+        }
+
+        .hand-box img {
+            width: 90px;
+            height: 90px;
+            object-fit: contain;
+        }
+
+        #result,
+        #computer-choice {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 16px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 1. タイトルの部分です。
+         ここでは、このページがじゃんけんゲームだとすぐ分かるようにしています。 -->
+    <h1>じゃんけんゲーム</h1>
+
+    <!-- 2. ユーザーが手を選ぶ場所です。
+         ここにある3つのボタンを押すと、ユーザーの選んだ手が決まります。
+         画像を使うことで、文字だけよりも分かりやすくしています。 -->
+    <section>
+        <p>【あなたが選ぶ場所】</p>
+        <p>手を選んでください：</p>
+        <button id="gu"><img src="画像/gu.png" alt="グー"></button>
+        <button id="ch"><img src="画像/ch.png" alt="チョキ"></button>
+        <button id="pa"><img src="画像/pa.png" alt="パー"></button>
+    </section>
+
+    <!-- 3. 手の見た目を箱で表示する場所です。
+         ここであなたの手とコンピュータの手を、文字だけでなく画像でも見られるようにします。 -->
+    <section class="hand-area">
+        <div class="hand-box">
+            <h2>【あなたの手】</h2>
+            <img id="user-hand-image" src="画像/gu.png" alt="あなたの手">
+        </div>
+        <div class="hand-box">
+            <h2>【コンピュータの手】</h2>
+            <img id="computer-hand-image" src="画像/gu.png" alt="コンピュータの手">
+        </div>
+    </section>
+
+    <!-- 4. コンピュータが選んだ手を文字でも表示する場所です。
+         画像だけでなく文字も出すことで、何が選ばれたかをはっきり分かるようにします。 -->
+    <section>
+        <p id="computer-choice">まだ選ばれていません。</p>
+    </section>
+
+    <!-- 5. 勝敗の結果を表示する場所です。
+         ユーザーの手とコンピュータの手を比べたあと、
+         ここに「勝ち」「負け」「あいこ」の結果を出します。 -->
+    <section>
+        <p id="result">まだ結果は出ていません。</p>
+    </section>
+
+    <!-- 6. JavaScript の部分です。
+         ここでゲームの動きそのものを作ります。
+         ボタンを押したら、コンピュータの手を決めて、
+         そのあと勝敗を計算して画面に表示します。 -->
+    <script>
+        // 6.1. ページの部品を取り出します。
+        // ここでボタンや表示場所を変数に入れておくと、あとで何度も使いやすくなります。
+        const guButton = document.getElementById("gu");
+        const chButton = document.getElementById("ch");
+        const paButton = document.getElementById("pa");
+        const resultText = document.getElementById("result");
+        const computerChoiceText = document.getElementById("computer-choice");
+        const userHandImage = document.getElementById("user-hand-image");
+        const computerHandImage = document.getElementById("computer-hand-image");
+
+        // 6.2. コンピュータの手をランダムに決める関数です。
+        // 3つの選択肢を配列に入れて、ランダムな番号を作り、
+        // その番号の手を返します。
+        function getComputerChoice() {
+            const choices = ["ぐー", "ちょき", "ぱー"];
+            const randomIndex = Math.floor(Math.random() * choices.length);
+            return choices[randomIndex];
+        }
+
+        // 6.3. 手の名前から画像ファイルの場所を決める関数です。
+        // これを使うと、ぐー・ちょき・ぱーに合わせて画像を切り替えられます。
+        function getHandImagePath(hand) {
+            if (hand === "ぐー") {
+                return "画像/gu.png";
+            }
+
+            if (hand === "ちょき") {
+                return "画像/ch.png";
+            }
+
+            return "画像/pa.png";
+        }
+
+        // 6.4. 1回分のじゃんけんを行う関数です。
+        // この関数は、ユーザーの手を受け取って、
+        // コンピュータの手を出し、結果を表示します。
+        function play(userChoice) {
+            const computerChoice = getComputerChoice();
+            const userChoiceText = userChoice === "ぐー" ? "グー" : userChoice === "ちょき" ? "チョキ" : "パー";
+
+            // ユーザーが選んだ手を左の箱に表示します。
+            userHandImage.src = getHandImagePath(userChoice);
+            userHandImage.alt = `あなたの手: ${userChoiceText}`;
+
+            // まず、コンピュータの手を画面に表示します。
+            computerChoiceText.textContent = `コンピュータの手: ${computerChoice}`;
+            computerHandImage.src = getHandImagePath(computerChoice);
+            computerHandImage.alt = `コンピュータの手: ${computerChoice}`;
+
+            // 同じ手だったら、あいこです。
+            if (userChoice === computerChoice) {
+                resultText.textContent = `あなたの手: ${userChoiceText} / あいこです。`;
+                return;
+            }
+
+            // ユーザーが勝つパターンを確認します。
+            // ぐーはちょきに勝ち、ちょきはぱーに勝ち、ぱーはぐーに勝ちます。
+            if (
+                (userChoice === "ぐー" && computerChoice === "ちょき") ||
+                (userChoice === "ちょき" && computerChoice === "ぱー") ||
+                (userChoice === "ぱー" && computerChoice === "ぐー")
+            ) {
+                resultText.textContent = `あなたの手: ${userChoiceText} / あなたの勝ちです！`;
+            } else {
+                // 勝ちでもあいこでもなければ、コンピュータの勝ちです。
+                resultText.textContent = `あなたの手: ${userChoiceText} / あなたの負けです。`;
+            }
+        }
+
+        // 6.5. ボタンを押したら play() が動くようにします。
+        // それぞれのボタンに、対応する手を渡しているので、
+        // クリックした瞬間にユーザーの選択が決まります。
+        guButton.addEventListener("click", () => play("ぐー"));
+        chButton.addEventListener("click", () => play("ちょき"));
+        paButton.addEventListener("click", () => play("ぱー"));
+    </script>
+</body>
+</html>
