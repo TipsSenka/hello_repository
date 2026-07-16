@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>じゃんけんゲーム</title>
+    <style>
+        /* CSSは木目調で作成してください */
+        .game {
+            text-align: left;
+            margin: 20px;
+        }
+        .hands {
+            margin: 20px 0;
+        }
+        .hand-button {
+            margin: 0 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            text-align: left;
+        }
+        .hand-button img {
+            width: 110px;
+            height: 110px;
+            object-fit: contain;
+            display: block;
+            margin: 8px 0;
+        }
+        .result-area {
+            margin: 20px 0;
+        }
+        .result-area p {
+            margin: 8px 0;
+        }
+        .reset-button {
+            margin: 20px 0;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .reset-button:hover {
+            background-color: #f0f0f0;
+        }
+        .reset-button:active {
+            background-color: #e0e0e0;
+        }
+        .reset-button:focus {
+            outline: none;
+        }
+        .reset-button:disabled {
+            background-color: #f0f0f0;
+            cursor: not-allowed;
+        }
+        .reset-button:disabled:hover {
+            background-color: #f0f0f0;
+            cursor: not-allowed;
+        }
+        .reset-button:disabled:active {
+            background-color: #f0f0f0;
+            cursor: not-allowed;
+        }
+        .reset-button:disabled:focus {
+            outline: none;
+        }
+        .reset-button:disabled:disabled {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <!--
+        じゃんけんアプリの実装フロー
+        1. 画面にタイトル、説明、ユーザーが選ぶ3つの手を表示する
+        2. ユーザーがグー・チョキ・パーのどれかをクリックできるようにする
+        3. ユーザーが選んだら、コンピューターの手をランダムに決める
+        4. ユーザーの手とコンピューターの手を比べて勝敗を判定する
+            4-1. 同じ手なら「あいこ」
+            4-2. ユーザーが勝つ組み合わせなら「勝ち」
+            4-3. それ以外なら「負け」
+        5. 選んだ手、コンピューターの手、勝敗結果を画面に表示する
+        6. 「もう一度遊ぶ」ボタンで結果表示を初期状態に戻す
+    -->
+
+    <main class="game">
+        <!-- 1. 画面にタイトル、説明、ユーザーが選ぶ3つの手を表示する -->
+        <h1>じゃんけんゲーム</h1>
+        <p class="lead">グー、チョキ、パー。今日はどれでいきますか？</p>
+
+        <div class="hands">
+            <!-- 2. ユーザーがグー・チョキ・パーのどれかをクリックできるようにする -->
+            <button class="hand-button" type="button" data-hand="グー">
+                <img src="gu.png" alt="グー">
+                グー
+            </button>
+            <button class="hand-button" type="button" data-hand="チョキ">
+                <img src="ch.png" alt="チョキ">
+                チョキ
+            </button>
+            <button class="hand-button" type="button" data-hand="パー">
+                <img src="pa.png" alt="パー">
+                パー
+            </button>
+        </div>
+
+        <!-- 5. 選んだ手、コンピューターの手、勝敗結果を画面に表示する -->
+        <section class="result-area" aria-live="polite">
+            <p id="player-hand">あなたの手：まだ選んでいません</p>
+            <p id="computer-hand">コンピューターの手：まだ選んでいません</p>
+            <!-- 5-1. コンピューターが出した手も画像で表示する -->
+            <img class="computer-image" id="computer-image" src="" alt="">
+            <p id="judgement">結果はここに表示されます</p>
+        </section>
+
+        <!-- 6. 「もう一度遊ぶ」ボタンで結果表示を初期状態に戻す -->
+        <button class="reset-button" type="button" id="reset-button">もう一度遊ぶ</button>
+    </main>
+
+    <script>
+        // 3. ユーザーが選んだら、コンピューターの手をランダムに決める
+        const hands = ['グー', 'チョキ', 'パー'];
+        const handButtons = document.querySelectorAll('.hand-button');
+        const playerHandText = document.getElementById('player-hand');
+        const computerHandText = document.getElementById('computer-hand');
+        const computerImage = document.getElementById('computer-image');
+        const judgementText = document.getElementById('judgement');
+        const resetButton = document.getElementById('reset-button');
+        const handImages = {
+            グー: 'gu.png',
+            チョキ: 'ch.png',
+            パー: 'pa.png'
+        };
+
+        function getComputerHand() {
+            const randomIndex = Math.floor(Math.random() * hands.length);
+            return hands[randomIndex];
+        }
+
+        // 4. ユーザーの手とコンピューターの手を比べて勝敗を判定する
+        function judgeGame(playerHand, computerHand) {
+            // 4-1. 同じ手なら「あいこ」
+            if (playerHand === computerHand) {
+                return 'あいこ';
+            }
+
+            // 4-2. ユーザーが勝つ組み合わせなら「勝ち」
+            if (
+                (playerHand === 'グー' && computerHand === 'チョキ') ||
+                (playerHand === 'チョキ' && computerHand === 'パー') ||
+                (playerHand === 'パー' && computerHand === 'グー')
+            ) {
+                return 'あなたの勝ち';
+            }
+
+            // 4-3. それ以外なら「負け」
+            return 'あなたの負け';
+        }
+
+        handButtons.forEach((button) => {
+            button.addEventListener('click', () => {
+                const playerHand = button.dataset.hand;
+                const computerHand = getComputerHand();
+                const judgement = judgeGame(playerHand, computerHand);
+
+                // 5. 選んだ手、コンピューターの手、勝敗結果を画面に表示する
+                playerHandText.textContent = `あなたの手：${playerHand}`;
+                computerHandText.textContent = `コンピューターの手：${computerHand}`;
+                computerImage.src = handImages[computerHand];
+                computerImage.alt = `コンピューターの${computerHand}`;
+                computerImage.style.display = 'block';
+                judgementText.textContent = judgement;
+            });
+        });
+
+        resetButton.addEventListener('click', () => {
+            playerHandText.textContent = 'あなたの手：まだ選んでいません';
+            computerHandText.textContent = 'コンピューターの手：まだ選んでいません';
+            computerImage.src = '';
+            computerImage.alt = '';
+            computerImage.style.display = 'none';
+            judgementText.textContent = '結果はここに表示されます';
+        });
+    </script>
+</body>
+</html>
