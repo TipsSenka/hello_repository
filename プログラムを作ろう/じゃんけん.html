@@ -36,7 +36,12 @@
     <div id="computerchoice">
         <h2>コンピュータの手</h2>
         <p id="computerhand"></p>
+        <!-- コンピュータの手の画像を表示する -->
+        <div id="computerhandimage"></div>
     </div>
+
+    <!-- 勝敗を表示する -->
+    <div id="result"></div>
 
     <script>
         //３．ユーザーとコンピュータの手を比較して勝敗を判定する
@@ -44,8 +49,18 @@
             // コンピュータがランダムで手を選ぶ
             const hands = ['グー', 'チョキ', 'パー'];
             const computerHand = hands[Math.floor(Math.random() * hands.length)];
+            //画像の配列を作成する
+            const handImages = {
+                'グー': 'gu.png',
+                'チョキ': 'ch.png',
+                'パー': 'pa.png'
+            };
+            // コンピュータの手の画像を表示する
+            const computerHandImage = handImages[computerHand];
             // コンピュータの手を表示する
             document.getElementById('computerhand').textContent = computerHand;
+            //コンピュータの手の画像を表示する
+            document.getElementById('computerhandimage').innerHTML = `<img src="画像/${computerHandImage}" alt="${computerHand}">`;
 
             // 勝敗を判定する
             let result;
@@ -62,12 +77,13 @@
             }
 
             // 勝敗の結果を表示する
-            alert(result);
+            document.getElementById('result').textContent = result;
         }
 
         //５．もう一度プレイするかどうかをユーザーに尋ねる
         function askToPlayAgain() {
-            const playAgain = confirm('もう一度プレイしますか？');
+            const playAgain = confirm(result + 'もう一度プレイしますか？');
+            //confirm()は、ユーザーに「OK」または「キャンセル」の選択肢を提示するダイアログボックスを表示し、ユーザーが「OK」をクリックした場合はtrueを返し、「キャンセル」をクリックした場合はfalseを返します。
             if (playAgain) {
                 // ６．もう一度プレイする場合は、コンピュータの手をリセットして、ユーザーが手を選ぶ画面に戻る
                 document.getElementById('computerhand').textContent = '';
