@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>じゃんけんゲーム</title>
+  <!--
+    まずはじゃんけんゲームに必要な工程をリストアップします
+    1. ユーザーが手を選ぶ（グー、チョキ、パー）
+    2. コンピュータがランダムで手を選ぶ
+    3. ユーザーとコンピュータの手を比較して勝敗を決定する
+    4. 勝敗の結果を表示する
+    5. 必要に応じてリセットや再戦の機能を追加する
+  -->
+</head>
+<body>
+  <!--
+    1. ユーザーが手を選ぶ
+    画像gu.png、choki.png、pa.pngを用意し、それぞれの画像をボタンに表示します。
+    idの名前はローマ字で統一する
+  -->
+  <div id="user_choice">
+    <h2>あなたの手を選んでください</h2>
+    <button id="gu" onclick="userChoice('グー')"><img src="画像/gu.png" alt="グー"></button>
+    <button id="choki" onclick="userChoice('チョキ')"><img src="画像/ch.png" alt="チョキ"></button>
+    <button id="pa" onclick="userChoice('パー')"><img src="画像/pa.png" alt="パー"></button>
+  </div>
+
+  <div id="player_choice">
+    <h2>あなたの手</h2>
+    <img id="player_hand" src="" alt="">
+  </div>
+
+  <!--
+    2. コンピュータがランダムで手を選ぶ
+    JavaScriptでランダムに手を選ぶ関数を作成します。
+    コンピューターの手も画像で表示する
+  -->
+  <div id="computer_choice">
+    <h2>コンピュータの手</h2>
+    <img id="computer_hand" src="" alt="">
+  </div>
+
+  <div id="result_area">
+    <h2>結果</h2>
+    <p id="result_text">まだ結果は出ていません。</p>
+  </div>
+  <script>
+    // 2. コンピュータがランダムで手を選ぶ
+    // ユーザーの手を選んだ後にコンピュータの手を決定する
+    function userChoice(userHand) {
+      // コンピュータの手をランダムに選ぶ
+      const hands = ['グー', 'チョキ', 'パー'];
+      const computerHand = hands[Math.floor(Math.random() * hands.length)];
+
+      // ユーザーの手を画像で表示する
+      const playerHandImage = document.getElementById('player_hand');
+      showHandImage(playerHandImage, userHand);
+
+      // コンピュータの手を画像で表示する
+      const computerHandImage = document.getElementById('computer_hand');
+      showHandImage(computerHandImage, computerHand);
+
+      // 勝敗を決定する
+      determineWinner(userHand, computerHand);
+    }
+
+    function showHandImage(imageElement, hand) {
+      if (hand === 'グー') {
+        imageElement.src = '画像/gu.png';
+        imageElement.alt = 'グー';
+      } else if (hand === 'チョキ') {
+        imageElement.src = '画像/ch.png';
+        imageElement.alt = 'チョキ';
+      } else {
+        imageElement.src = '画像/pa.png';
+        imageElement.alt = 'パー';
+      }
+    }
+
+    // 3. ユーザーとコンピュータの手を比較して勝敗を決定する
+    function determineWinner(userHand, computerHand) {
+      const resultText = document.getElementById('result_text');
+
+      if (userHand === computerHand) {
+        resultText.textContent = '引き分けです！';
+      } else if (
+        (userHand === 'グー' && computerHand === 'チョキ') ||
+        (userHand === 'チョキ' && computerHand === 'パー') ||
+        (userHand === 'パー' && computerHand === 'グー')
+      ) {
+        resultText.textContent = 'あなたの勝ちです！';
+      } else {
+        resultText.textContent = 'コンピュータの勝ちです！';
+      }
+    }
+  </script>
+</body>
+</html>
